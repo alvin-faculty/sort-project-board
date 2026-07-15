@@ -107,7 +107,7 @@ input[type="date"] { font-family: inherit; }
 .drawer-scrim.open { display: block; }
 .drawer {
   position: fixed; top: 0; right: 0; bottom: 0;
-  width: 520px; max-width: 100vw;
+  width: 40vw; min-width: 420px; max-width: 100vw;
   background: hsl(var(--background));
   border-left: 1px solid hsl(var(--border));
   box-shadow: -8px 0 30px rgb(0 0 0 / 0.08);
@@ -149,8 +149,39 @@ input[type="date"] { font-family: inherit; }
 .drawer-section { padding: 0.875rem 1.25rem; }
 .drawer-section-title { font-size: 0.75rem; font-weight: 600; color: hsl(var(--muted-foreground)); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.625rem; }
 
-.notes-ta { width: 100%; font-size: 0.875rem; font-family: inherit; background: transparent; border: none; outline: none; resize: none; color: hsl(var(--foreground)); line-height: 1.65; min-height: 6rem; }
-.notes-ta::placeholder { color: hsl(var(--muted-foreground)); }
+/* ── Rich text editor (Gutenberg-style) ── */
+.rte-wrap { display: flex; flex-direction: column; }
+.rte-toolbar { display: flex; align-items: center; gap: 0.125rem; flex-wrap: wrap; }
+.rte-btn { font-family: inherit; font-size: 0.75rem; font-weight: 600; line-height: 1; color: hsl(var(--muted-foreground)); background: transparent; border: none; border-radius: calc(var(--radius) - 4px); padding: 0.3125rem 0.5rem; cursor: pointer; transition: background 0.12s, color 0.12s; white-space: nowrap; }
+.rte-btn:hover { background: hsl(var(--accent)); color: hsl(var(--foreground)); }
+.rte-btn.active { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+.rte-btn.rte-b { font-weight: 800; }
+.rte-btn.rte-i { font-style: italic; }
+.rte-btn.rte-s { text-decoration: line-through; }
+.rte-sep { width: 1px; align-self: stretch; background: hsl(var(--border)); margin: 0.1875rem 0.25rem; }
+
+.rte-content { width: 100%; font-size: 0.875rem; font-family: inherit; line-height: 1.65; color: hsl(var(--foreground)); outline: none; }
+.rte-content:empty:before { content: attr(data-placeholder); color: hsl(var(--muted-foreground)); pointer-events: none; }
+.rte-content p { margin: 0 0 0.625em; }
+.rte-content p:last-child { margin-bottom: 0; }
+.rte-content h2 { font-size: 1.125rem; font-weight: 700; margin: 0.75em 0 0.375em; }
+.rte-content h3 { font-size: 1rem; font-weight: 700; margin: 0.75em 0 0.375em; }
+.rte-content ul, .rte-content ol { margin: 0 0 0.625em 1.25em; }
+.rte-content li { margin-bottom: 0.25em; }
+.rte-content blockquote { border-left: 3px solid hsl(var(--border)); padding-left: 0.75em; margin: 0 0 0.625em; color: hsl(var(--muted-foreground)); font-style: italic; }
+.rte-content a { color: hsl(213 94% 42%); text-decoration: underline; }
+
+/* description editor: blends into the panel, toolbar separated by a hairline */
+.rte-wrap .rte-toolbar { border-bottom: 1px solid hsl(var(--border)); margin-bottom: 0.5rem; padding: 0 0 0.5rem; }
+.rte-wrap .rte-content { min-height: 6rem; }
+
+/* comment composer: boxed like a text field, toolbar hidden until focused */
+.rte-wrap.boxed { border: 1px solid hsl(var(--border)); border-radius: calc(var(--radius) - 2px); background: hsl(var(--background)); transition: border-color 0.12s, box-shadow 0.12s; }
+.rte-wrap.boxed:focus-within { border-color: hsl(var(--ring)); box-shadow: 0 0 0 2px hsl(var(--ring) / 0.1); }
+.rte-wrap.boxed .rte-toolbar { border-bottom: 1px solid hsl(var(--border)); margin-bottom: 0; padding: 0.3125rem 0.375rem; background: hsl(var(--muted) / 0.4); }
+.rte-wrap.boxed .rte-content { min-height: 2.5rem; padding: 0.5rem 0.75rem; }
+.rte-wrap.toolbar-onfocus .rte-toolbar { display: none; }
+.rte-wrap.toolbar-onfocus.rte-focused .rte-toolbar { display: flex; }
 
 /* Comments */
 .comment-list { display: flex; flex-direction: column; gap: 0; }
@@ -167,16 +198,12 @@ input[type="date"] { font-family: inherit; }
 .comment-input-wrap { padding: 0.75rem 0 0; display: flex; gap: 0.625rem; align-items: flex-start; }
 .comment-input-avatar { width: 1.625rem; height: 1.625rem; border-radius: 9999px; background: hsl(var(--secondary)); color: hsl(var(--muted-foreground)); font-size: 0.625rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 0.25rem; }
 .comment-input-inner { flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
-.comment-ta { width: 100%; font-size: 0.875rem; font-family: inherit; border: 1px solid hsl(var(--border)); border-radius: calc(var(--radius) - 2px); padding: 0.5rem 0.75rem; resize: none; outline: none; min-height: 2.5rem; line-height: 1.5; background: hsl(var(--background)); color: hsl(var(--foreground)); transition: border-color 0.12s, box-shadow 0.12s; }
-.comment-ta:focus { border-color: hsl(var(--ring)); box-shadow: 0 0 0 2px hsl(var(--ring) / 0.1); }
-.comment-ta::placeholder { color: hsl(var(--muted-foreground)); }
 .comment-actions { display: none; justify-content: flex-end; gap: 0.5rem; }
-.comment-ta:focus ~ .comment-actions,
 .comment-actions.visible { display: flex; }
 
 /* ── App shell ── */
 .app-shell { display: flex; flex-direction: column; height: 100vh; overflow: hidden; transition: padding-right 0.22s cubic-bezier(0.4,0,0.2,1); }
-.app-shell.drawer-open { padding-right: 520px; }
+.app-shell.drawer-open { padding-right: min(max(40vw, 420px), 100vw); }
 
 /* ── Top nav ── */
 .topnav { display: flex; align-items: center; padding: 0 1.25rem; height: 3.25rem; border-bottom: 1px solid hsl(var(--border)); background: hsl(var(--background)); flex-shrink: 0; gap: 0.875rem; }
@@ -311,7 +338,7 @@ input[type="date"] { font-family: inherit; }
 
   /* drawer: full screen */
   .drawer {
-    width: 100%;
+    width: 100%; min-width: 0;
     top: 0; right: 0; bottom: 0;
     border-left: none;
   }
@@ -609,7 +636,7 @@ svg { flex-shrink: 0; }
 
 /* ── File attachments in comments ── */
 .comment-ta-wrap { position: relative; }
-.comment-ta-wrap.drag-over .comment-ta { border-color: hsl(var(--ring)); box-shadow: 0 0 0 2px hsl(var(--ring) / 0.12); }
+.comment-ta-wrap.drag-over { border-color: hsl(var(--ring)); box-shadow: 0 0 0 2px hsl(var(--ring) / 0.12); }
 .comment-ta-wrap.drag-over::after { content: 'Drop files here'; position: absolute; inset: 0; background: hsl(var(--ring) / 0.07); border: 2px dashed hsl(var(--ring)); border-radius: calc(var(--radius) - 2px); display: flex; align-items: center; justify-content: center; font-size: 0.8125rem; color: hsl(213 94% 42%); font-weight: 500; pointer-events: none; }
 .attach-previews { display: flex; flex-wrap: wrap; gap: 0.375rem; margin-top: 0.375rem; }
 .attach-previews:empty { display: none; }
@@ -993,6 +1020,95 @@ function migrateSlot(v, q, type) {
   if (!v) return type === 'start' ? QS[q]?.sm || 1 : QS[q]?.em || 6;
   if (v <= 12) return type === 'start' ? (v - 1) * 2 + 1 : v * 2; // old format
   return Math.max(1, Math.min(TOTAL_SLOTS, v)); // already slot format
+}
+
+/* ─── Rich text editor (Gutenberg-style) ─── */
+function escapeHtml(str) {
+  return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+/* legacy notes/comments were plain text; new ones are HTML from the rich editor — tell them apart */
+function looksLikeRichHtml(str) {
+  return /<(p|h[1-6]|ul|ol|li|blockquote|strong|em|b|i|a|code|s)[ >]/i.test(str || '');
+}
+function plainToRichHtml(str) {
+  if (!str) return '';
+  const paras = str.split(/\n+/).filter(Boolean).map(line => `<p>${escapeHtml(line)}</p>`).join('');
+  return paras || `<p>${escapeHtml(str)}</p>`;
+}
+/* value to load into a contenteditable editor */
+function toEditorHtml(str) { return looksLikeRichHtml(str) ? str : plainToRichHtml(str); }
+/* value to render read-only (comment history) */
+function toDisplayHtml(str) { return looksLikeRichHtml(str) ? str : escapeHtml(str || '').replace(/\n/g, '<br>'); }
+
+const RTE_TOOLBAR_HTML = `
+  <div class="rte-toolbar" data-rte-toolbar>
+    <button type="button" class="rte-btn" data-cmd="formatBlock" data-val="H2" title="Heading">H2</button>
+    <button type="button" class="rte-btn" data-cmd="formatBlock" data-val="H3" title="Subheading">H3</button>
+    <button type="button" class="rte-btn" data-cmd="formatBlock" data-val="P" title="Normal text">¶</button>
+    <span class="rte-sep"></span>
+    <button type="button" class="rte-btn rte-b" data-cmd="bold" title="Bold">B</button>
+    <button type="button" class="rte-btn rte-i" data-cmd="italic" title="Italic">I</button>
+    <button type="button" class="rte-btn rte-s" data-cmd="strikeThrough" title="Strikethrough">S</button>
+    <span class="rte-sep"></span>
+    <button type="button" class="rte-btn" data-cmd="insertUnorderedList" title="Bullet list">• List</button>
+    <button type="button" class="rte-btn" data-cmd="insertOrderedList" title="Numbered list">1. List</button>
+    <button type="button" class="rte-btn" data-cmd="formatBlock" data-val="BLOCKQUOTE" title="Quote">Quote</button>
+    <span class="rte-sep"></span>
+    <button type="button" class="rte-btn" data-cmd="link" title="Link">Link</button>
+  </div>`;
+
+const RTE_CMD_STATE = { bold: 'bold', italic: 'italic', strikeThrough: 'strikeThrough', insertUnorderedList: 'insertUnorderedList', insertOrderedList: 'insertOrderedList' };
+function updateToolbarState(toolbar, content) {
+  if (document.activeElement !== content) return;
+  toolbar.querySelectorAll('.rte-btn').forEach(btn => {
+    const cmd = btn.dataset.cmd;
+    let active = false;
+    try {
+      if (RTE_CMD_STATE[cmd]) active = document.queryCommandState(RTE_CMD_STATE[cmd]);
+      else if (cmd === 'formatBlock' && btn.dataset.val) {
+        const block = document.queryCommandValue('formatBlock');
+        active = !!block && block.toLowerCase() === btn.dataset.val.toLowerCase();
+      }
+    } catch (e) {}
+    btn.classList.toggle('active', active);
+  });
+}
+/* wires up a .rte-wrap containing [data-rte-toolbar] + [data-rte-content]; returns the content element */
+function initRichEditor(wrapId, { placeholder = '', initialHtml = '', onChange, onFocus, onBlur } = {}) {
+  const wrap = document.getElementById(wrapId); if (!wrap) return null;
+  const toolbar = wrap.querySelector('[data-rte-toolbar]');
+  const content = wrap.querySelector('[data-rte-content]');
+  content.innerHTML = initialHtml;
+  if (placeholder) content.setAttribute('data-placeholder', placeholder);
+
+  toolbar.querySelectorAll('.rte-btn').forEach(btn => {
+    btn.addEventListener('mousedown', e => e.preventDefault()); // keep selection inside the editor
+    btn.addEventListener('click', () => {
+      const cmd = btn.dataset.cmd, val = btn.dataset.val;
+      content.focus();
+      if (cmd === 'link') {
+        const url = window.prompt('Link URL:', 'https://');
+        if (url) document.execCommand('createLink', false, url);
+      } else if (cmd === 'formatBlock') {
+        document.execCommand('formatBlock', false, val);
+      } else {
+        document.execCommand(cmd, false, null);
+      }
+      updateToolbarState(toolbar, content);
+      onChange && onChange(content.innerHTML);
+    });
+  });
+
+  content.addEventListener('input', () => {
+    if (content.textContent.trim() === '' && content.innerHTML !== '') content.innerHTML = '';
+    onChange && onChange(content.innerHTML);
+  });
+  content.addEventListener('keyup', () => updateToolbarState(toolbar, content));
+  content.addEventListener('mouseup', () => updateToolbarState(toolbar, content));
+  content.addEventListener('focus', () => { wrap.classList.add('rte-focused'); updateToolbarState(toolbar, content); onFocus && onFocus(); });
+  content.addEventListener('blur', () => { wrap.classList.remove('rte-focused'); onBlur && onBlur(); });
+
+  return content;
 }
 
 /* shared comment formatter — supports plain text or JSON {text, attachments:[]} */
@@ -2073,7 +2189,7 @@ function renderDrawer() {
         <span class="comment-time">${c.time}</span>
         <button class="comment-del" onclick="deleteComment(${task.id},${c.id})">×</button>
       </div>
-      ${c.text ? `<div class="comment-text">${c.text.replace(/\n/g,'<br>')}</div>` : ''}
+      ${c.text ? `<div class="comment-text rte-content">${toDisplayHtml(c.text)}</div>` : ''}
       ${renderCommentAttachments(c.attachments)}
     </div>`).join('') : '<p style="font-size:0.8125rem;color:hsl(var(--muted-foreground))">No comments yet.</p>';
 
@@ -2137,7 +2253,10 @@ function renderDrawer() {
 
       <div class="drawer-section">
         <div class="drawer-section-title">Description</div>
-        <textarea class="notes-ta" id="d-notes" placeholder="Add a description, details, links…">${task.notes||''}</textarea>
+        <div class="rte-wrap" id="d-notes-wrap">
+          ${RTE_TOOLBAR_HTML}
+          <div class="rte-content" id="d-notes" contenteditable="true" data-rte-content></div>
+        </div>
       </div>
 
       <div class="sep"></div>
@@ -2152,8 +2271,9 @@ function renderDrawer() {
         <div class="comment-input-wrap">
           <div class="comment-input-avatar">Y</div>
           <div class="comment-input-inner">
-            <div class="comment-ta-wrap" id="d-ta-wrap">
-              <textarea class="comment-ta" id="d-comment-ta" placeholder="Add a comment or drop files…" rows="1"></textarea>
+            <div class="comment-ta-wrap rte-wrap boxed toolbar-onfocus" id="d-ta-wrap">
+              ${RTE_TOOLBAR_HTML}
+              <div class="rte-content" id="d-comment-ta" contenteditable="true" data-rte-content></div>
             </div>
             <div class="attach-previews" id="d-attach-previews"></div>
             <div class="comment-actions" id="d-comment-actions">
@@ -2175,7 +2295,11 @@ function renderDrawer() {
   autoResize(titleEl);
   titleEl.addEventListener('input', e => { autoResize(e.target); task.t = e.target.value; dbUpdate(task); render(); });
 
-  document.getElementById('d-notes').addEventListener('input', e => { task.notes = e.target.value; dbUpdate(task); updateStats(); });
+  initRichEditor('d-notes-wrap', {
+    placeholder: 'Add a description, details, links…',
+    initialHtml: toEditorHtml(task.notes),
+    onChange: html => { task.notes = html; dbUpdate(task); updateStats(); }
+  });
   document.getElementById('d-status').addEventListener('change', e => { task.status = e.target.value; sbUpdate(task); render(); });
   document.getElementById('d-due').addEventListener('change', e => { task.dueDate = e.target.value; sbUpdate(task); render(); });
   document.getElementById('d-cat').addEventListener('change', e => {
@@ -2192,9 +2316,10 @@ function renderDrawer() {
   });
 
   // Comment focus + drag/drop
-  const cta = document.getElementById('d-comment-ta');
-  cta.addEventListener('focus', () => { document.getElementById('d-comment-actions').classList.add('visible'); });
-  cta.addEventListener('input', () => { const ar = el => { el.style.height='auto'; el.style.height=el.scrollHeight+'px'; }; ar(cta); });
+  initRichEditor('d-ta-wrap', {
+    placeholder: 'Add a comment or drop files…',
+    onFocus: () => document.getElementById('d-comment-actions').classList.add('visible')
+  });
   setupCommentDrop('d-ta-wrap', 'd-attach-previews');
   renderPendingPreviews('d-attach-previews');
   if (pendingFiles.length) document.getElementById('d-comment-actions').classList.add('visible');
@@ -2306,7 +2431,10 @@ function renderSubDrawer() {
 
       <div class="drawer-section">
         <div class="drawer-section-title">Description</div>
-        <textarea class="notes-ta" id="sub-notes" placeholder="Add details, links, context…">${sub.notes||''}</textarea>
+        <div class="rte-wrap" id="sub-notes-wrap">
+          ${RTE_TOOLBAR_HTML}
+          <div class="rte-content" id="sub-notes" contenteditable="true" data-rte-content></div>
+        </div>
       </div>
 
       <div class="sep"></div>
@@ -2322,7 +2450,7 @@ function renderSubDrawer() {
                 <span class="comment-time">${c.time}</span>
                 <button class="comment-del" onclick="deleteSubtaskComment(${sub.id},${c.id})">×</button>
               </div>
-              ${c.text ? `<div class="comment-text">${c.text.replace(/\n/g,'<br>')}</div>` : ''}
+              ${c.text ? `<div class="comment-text rte-content">${toDisplayHtml(c.text)}</div>` : ''}
               ${renderCommentAttachments(c.attachments)}
             </div>`).join('')
           : '<p style="font-size:0.8125rem;color:hsl(var(--muted-foreground))">No comments yet.</p>'}
@@ -2330,8 +2458,9 @@ function renderSubDrawer() {
         <div class="comment-input-wrap">
           <div class="comment-input-avatar">Y</div>
           <div class="comment-input-inner">
-            <div class="comment-ta-wrap" id="sub-ta-wrap">
-              <textarea class="comment-ta" id="sub-comment-ta" placeholder="Add a comment or drop files…" rows="1"></textarea>
+            <div class="comment-ta-wrap rte-wrap boxed toolbar-onfocus" id="sub-ta-wrap">
+              ${RTE_TOOLBAR_HTML}
+              <div class="rte-content" id="sub-comment-ta" contenteditable="true" data-rte-content></div>
             </div>
             <div class="attach-previews" id="sub-attach-previews"></div>
             <div class="comment-actions" id="sub-comment-actions">
@@ -2355,38 +2484,46 @@ function renderSubDrawer() {
 
   document.getElementById('sub-status').addEventListener('change', e => { sub.status = e.target.value; sbUpdateSubtask(sub); render(); });
   document.getElementById('sub-due').addEventListener('change', e => { sub.dueDate = e.target.value; sbUpdateSubtask(sub); render(); });
-  document.getElementById('sub-notes').addEventListener('input', e => { sub.notes = e.target.value; dbUpdateSub(sub); });
+  initRichEditor('sub-notes-wrap', {
+    placeholder: 'Add details, links, context…',
+    initialHtml: toEditorHtml(sub.notes),
+    onChange: html => { sub.notes = html; dbUpdateSub(sub); }
+  });
 
-  const scta = document.getElementById('sub-comment-ta');
-  scta.addEventListener('focus', () => document.getElementById('sub-comment-actions').classList.add('visible'));
-  scta.addEventListener('input', () => { scta.style.height='auto'; scta.style.height=scta.scrollHeight+'px'; });
+  initRichEditor('sub-ta-wrap', {
+    placeholder: 'Add a comment or drop files…',
+    onFocus: () => document.getElementById('sub-comment-actions').classList.add('visible')
+  });
   setupCommentDrop('sub-ta-wrap', 'sub-attach-previews');
   renderPendingPreviews('sub-attach-previews');
   if (pendingFiles.length) document.getElementById('sub-comment-actions').classList.add('visible');
 }
 
 async function addComment(taskId) {
-  const ta = document.getElementById('d-comment-ta');
-  const text = ta.value.trim();
+  const el = document.getElementById('d-comment-ta');
+  const html = el.innerHTML;
+  const text = el.textContent.trim();
   if (!text && pendingFiles.length === 0) return;
   const task = byId(taskId); if (!task) return;
-  ta.value = ''; ta.style.height = 'auto';
+  el.innerHTML = '';
+  document.getElementById('d-ta-wrap').classList.remove('rte-focused');
   document.getElementById('d-comment-actions').classList.remove('visible');
   const attachments = [...pendingFiles]; pendingFiles = [];
-  const stored = attachments.length ? JSON.stringify({ text, attachments }) : text;
+  const stored = attachments.length ? JSON.stringify({ text: html, attachments }) : html;
   const row = await sbAddComment(taskId, stored);
   task.comments.push(row && row.id
     ? fmtComment(row)
-    : { id: nextCommentId++, text, attachments, time: new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true}) });
+    : { id: nextCommentId++, text: html, attachments, time: new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true}) });
   render(); renderDrawer();
   setTimeout(() => { const el = document.getElementById('d-comments'); if(el) el.scrollIntoView({behavior:'smooth',block:'nearest'}); }, 50);
 }
 function cancelComment() {
-  const ta = document.getElementById('d-comment-ta'); if (!ta) return;
-  ta.value = ''; ta.style.height='auto';
+  const el = document.getElementById('d-comment-ta'); if (!el) return;
+  el.innerHTML = '';
   pendingFiles = [];
   const prev = document.getElementById('d-attach-previews'); if (prev) prev.innerHTML = '';
   document.getElementById('d-comment-actions').classList.remove('visible');
+  const wrap = document.getElementById('d-ta-wrap'); if (wrap) wrap.classList.remove('rte-focused');
 }
 function deleteComment(taskId, commentId) {
   const task = byId(taskId); if (!task) return;
@@ -2396,29 +2533,32 @@ function deleteComment(taskId, commentId) {
 }
 
 async function addSubtaskComment(subtaskId) {
-  const ta = document.getElementById('sub-comment-ta');
-  const text = ta.value.trim();
+  const el = document.getElementById('sub-comment-ta');
+  const html = el.innerHTML;
+  const text = el.textContent.trim();
   if (!text && pendingFiles.length === 0) return;
   const found = findSubtask(subtaskId); if (!found) return;
   const { sub } = found;
-  ta.value = ''; ta.style.height = 'auto';
+  el.innerHTML = '';
+  document.getElementById('sub-ta-wrap').classList.remove('rte-focused');
   document.getElementById('sub-comment-actions').classList.remove('visible');
   const attachments = [...pendingFiles]; pendingFiles = [];
-  const stored = attachments.length ? JSON.stringify({ text, attachments }) : text;
+  const stored = attachments.length ? JSON.stringify({ text: html, attachments }) : html;
   const row = await sbAddSubtaskComment(subtaskId, stored);
   if (!sub.comments) sub.comments = [];
   sub.comments.push(row && row.id
     ? fmtComment(row)
-    : { id: nextCommentId++, text, attachments, time: new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true}) });
+    : { id: nextCommentId++, text: html, attachments, time: new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true}) });
   renderDrawer();
   setTimeout(() => { const el = document.getElementById('sub-comments'); if(el) el.scrollIntoView({behavior:'smooth',block:'nearest'}); }, 50);
 }
 function cancelSubtaskComment() {
-  const ta = document.getElementById('sub-comment-ta'); if (!ta) return;
-  ta.value = ''; ta.style.height='auto';
+  const el = document.getElementById('sub-comment-ta'); if (!el) return;
+  el.innerHTML = '';
   pendingFiles = [];
   const prev = document.getElementById('sub-attach-previews'); if (prev) prev.innerHTML = '';
   document.getElementById('sub-comment-actions').classList.remove('visible');
+  const wrap = document.getElementById('sub-ta-wrap'); if (wrap) wrap.classList.remove('rte-focused');
 }
 function deleteSubtaskComment(subtaskId, commentId) {
   const found = findSubtask(subtaskId); if (!found) return;
