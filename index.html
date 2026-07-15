@@ -1,0 +1,2500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>SORT — Project Board</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --background: 0 0% 100%;
+  --foreground: 240 10% 3.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 3.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 240 10% 3.9%;
+  --primary: 240 5.9% 10%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 240 4.8% 95.9%;
+  --secondary-foreground: 240 5.9% 10%;
+  --muted: 240 4.8% 95.9%;
+  --muted-foreground: 240 3.8% 46.1%;
+  --accent: 240 4.8% 95.9%;
+  --accent-foreground: 240 5.9% 10%;
+  --destructive: 0 72.2% 50.6%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 240 5.9% 90%;
+  --input: 240 5.9% 90%;
+  --ring: 240 5.9% 10%;
+  --radius: 0.5rem;
+  --c-space:     38 92% 40%;
+  --c-legal:     213 94% 42%;
+  --c-brand:     15 79% 48%;
+  --c-inventory: 152 60% 32%;
+  --c-staffing:  240 5.9% 40%;
+  --c-community: 262 83% 52%;
+  --c-digital:   186 64% 36%;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+@media (max-width: 768px) {
+  html, body { height: auto; min-height: 100%; overflow: visible; overflow-x: hidden; }
+}
+body { background: hsl(var(--background)); color: hsl(var(--foreground)); font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+
+/* ── Buttons ── */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.375rem; white-space: nowrap; border-radius: calc(var(--radius) - 2px); font-size: 0.875rem; font-weight: 500; font-family: inherit; transition: background 0.12s, opacity 0.12s; cursor: pointer; border: none; outline: none; }
+.btn:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
+.btn-default { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); height: 2.25rem; padding: 0 1rem; }
+.btn-default:hover { opacity: 0.88; }
+.btn-outline { background: hsl(var(--background)); color: hsl(var(--foreground)); border: 1px solid hsl(var(--border)); height: 2.25rem; padding: 0 1rem; }
+.btn-outline:hover { background: hsl(var(--accent)); }
+.btn-ghost { background: transparent; color: hsl(var(--foreground)); height: 2rem; padding: 0 0.625rem; border-radius: calc(var(--radius) - 2px); }
+.btn-ghost:hover { background: hsl(var(--accent)); }
+.btn-sm { height: 2rem; padding: 0 0.75rem; font-size: 0.8125rem; }
+.btn-icon { height: 2rem; width: 2rem; padding: 0; border-radius: calc(var(--radius) - 2px); background: transparent; border: none; cursor: pointer; color: hsl(var(--muted-foreground)); display: flex; align-items: center; justify-content: center; transition: background 0.12s, color 0.12s; }
+.btn-icon:hover { background: hsl(var(--accent)); color: hsl(var(--foreground)); }
+
+/* ── Inputs ── */
+.input, .textarea, .select {
+  width: 100%; font-size: 0.875rem; font-family: inherit; font-weight: 400;
+  border: 1px solid hsl(var(--input)); border-radius: calc(var(--radius) - 2px);
+  background: hsl(var(--background)); color: hsl(var(--foreground));
+  padding: 0.5rem 0.75rem; outline: none;
+  transition: border-color 0.12s, box-shadow 0.12s;
+}
+.input { height: 2.25rem; display: flex; align-items: center; }
+.textarea { resize: none; min-height: 4rem; line-height: 1.6; }
+.select { height: 2.25rem; appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.625rem center; padding-right: 2rem; }
+.input:focus, .textarea:focus, .select:focus { border-color: hsl(var(--ring)); box-shadow: 0 0 0 2px hsl(var(--ring) / 0.1); }
+.input::placeholder, .textarea::placeholder { color: hsl(var(--muted-foreground)); }
+input[type="date"] { font-family: inherit; }
+
+/* ── Tabs ── */
+.tabs-list { display: inline-flex; align-items: center; background: hsl(var(--muted)); border-radius: var(--radius); padding: 0.25rem; height: 2.375rem; gap: 0.125rem; }
+.tabs-trigger { display: inline-flex; align-items: center; justify-content: center; border-radius: calc(var(--radius) - 4px); padding: 0 0.75rem; font-size: 0.875rem; font-weight: 500; font-family: inherit; height: 1.875rem; color: hsl(var(--muted-foreground)); background: transparent; border: none; cursor: pointer; transition: all 0.12s; }
+.tabs-trigger.active { background: hsl(var(--background)); color: hsl(var(--foreground)); box-shadow: 0 1px 3px rgb(0 0 0 / 0.1); }
+.tabs-trigger:not(.active):hover { color: hsl(var(--foreground)); }
+
+/* ── Badge ── */
+.badge { display: inline-flex; align-items: center; border-radius: 9999px; border: 1px solid transparent; padding: 0.125rem 0.5rem; font-size: 0.6875rem; font-weight: 600; font-family: inherit; line-height: 1; white-space: nowrap; }
+.badge-secondary { background: hsl(var(--secondary)); color: hsl(var(--secondary-foreground)); }
+.badge-todo { background: hsl(var(--secondary)); color: hsl(var(--muted-foreground)); border-color: hsl(var(--border)); }
+.badge-inprogress { background: hsl(213 94% 94%); color: hsl(213 94% 30%); border-color: hsl(213 94% 82%); }
+.badge-done { background: hsl(142 60% 91%); color: hsl(142 60% 26%); border-color: hsl(142 60% 75%); }
+.badge-overdue { background: hsl(0 72% 94%); color: hsl(0 72% 36%); border-color: hsl(0 72% 80%); }
+.badge-warning { background: hsl(38 92% 94%); color: hsl(38 92% 28%); border-color: hsl(38 92% 78%); }
+
+/* ── Separator ── */
+.sep { height: 1px; background: hsl(var(--border)); margin: 0; }
+
+/* ── Label ── */
+.label { font-size: 0.8125rem; font-weight: 500; display: block; margin-bottom: 0.3rem; }
+
+/* ── Dialog ── */
+.dialog-overlay { position: fixed; inset: 0; background: hsl(0 0% 0% / 0.7); display: flex; align-items: center; justify-content: center; z-index: 200; }
+.dialog-overlay.hidden { display: none; }
+.dialog-content { background: hsl(var(--background)); border-radius: var(--radius); border: 1px solid hsl(var(--border)); box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25); padding: 1.5rem; width: 28rem; max-width: calc(100vw - 2rem); }
+.dialog-title { font-size: 1.125rem; font-weight: 600; margin-bottom: 0.25rem; }
+.dialog-desc { font-size: 0.875rem; color: hsl(var(--muted-foreground)); margin-bottom: 1.25rem; }
+.dialog-footer { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.25rem; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.form-group { margin-bottom: 0.875rem; }
+.form-group:last-child { margin-bottom: 0; }
+
+/* ── Drawer ── */
+.drawer-scrim { position: fixed; inset: 0; z-index: 45; display: none; }
+.drawer-scrim.open { display: block; }
+.drawer {
+  position: fixed; top: 0; right: 0; bottom: 0;
+  width: 520px; max-width: 100vw;
+  background: hsl(var(--background));
+  border-left: 1px solid hsl(var(--border));
+  box-shadow: -8px 0 30px rgb(0 0 0 / 0.08);
+  z-index: 50;
+  transform: translateX(100%);
+  transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.drawer.open { transform: translateX(0); }
+
+.drawer-topbar { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem; border-bottom: 1px solid hsl(var(--border)); flex-shrink: 0; }
+.drawer-cat-indicator { width: 0.5rem; height: 0.5rem; border-radius: 9999px; flex-shrink: 0; }
+.drawer-cat-name { font-size: 0.8125rem; color: hsl(var(--muted-foreground)); font-weight: 500; }
+.drawer-topbar-right { margin-left: auto; display: flex; align-items: center; gap: 0.25rem; }
+
+.drawer-body { flex: 1; overflow-y: auto; }
+.drawer-body::-webkit-scrollbar { width: 4px; }
+.drawer-body::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 2px; }
+
+.drawer-title-wrap { padding: 1.25rem 1.25rem 0.5rem; }
+.drawer-title-input {
+  width: 100%; font-size: 1.375rem; font-weight: 700; font-family: inherit;
+  color: hsl(var(--foreground)); background: transparent;
+  border: none; outline: none; resize: none; line-height: 1.3;
+  padding: 0; min-height: 2rem;
+}
+.drawer-title-input::placeholder { color: hsl(var(--muted-foreground)); }
+
+.drawer-props { padding: 0.5rem 1.25rem 0.875rem; }
+.prop-row { display: flex; align-items: center; min-height: 2.25rem; gap: 0; border-radius: calc(var(--radius) - 2px); padding: 0.125rem 0; transition: background 0.1s; }
+.prop-row:hover { background: hsl(var(--muted) / 0.5); margin: 0 -0.375rem; padding-left: 0.375rem; padding-right: 0.375rem; }
+.prop-key { font-size: 0.8125rem; color: hsl(var(--muted-foreground)); font-weight: 500; width: 8rem; flex-shrink: 0; display: flex; align-items: center; gap: 0.375rem; }
+.prop-val { flex: 1; }
+.prop-select { background: transparent; border: none; outline: none; font-size: 0.8125rem; font-family: inherit; font-weight: 500; color: hsl(var(--foreground)); cursor: pointer; width: 100%; padding: 0; appearance: none; }
+.prop-date-input { background: transparent; border: none; outline: none; font-size: 0.8125rem; font-family: inherit; font-weight: 500; color: hsl(var(--foreground)); cursor: pointer; width: 100%; padding: 0; }
+.prop-date-input::-webkit-calendar-picker-indicator { opacity: 0.5; cursor: pointer; }
+.prop-empty { font-size: 0.8125rem; color: hsl(var(--muted-foreground)); font-style: italic; }
+
+.drawer-section { padding: 0.875rem 1.25rem; }
+.drawer-section-title { font-size: 0.75rem; font-weight: 600; color: hsl(var(--muted-foreground)); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.625rem; }
+
+.notes-ta { width: 100%; font-size: 0.875rem; font-family: inherit; background: transparent; border: none; outline: none; resize: none; color: hsl(var(--foreground)); line-height: 1.65; min-height: 6rem; }
+.notes-ta::placeholder { color: hsl(var(--muted-foreground)); }
+
+/* Comments */
+.comment-list { display: flex; flex-direction: column; gap: 0; }
+.comment-item { padding: 0.75rem 0; border-top: 1px solid hsl(var(--border)); }
+.comment-item:first-child { border-top: none; }
+.comment-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem; }
+.comment-avatar { width: 1.625rem; height: 1.625rem; border-radius: 9999px; background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); font-size: 0.625rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.comment-author { font-size: 0.8125rem; font-weight: 600; }
+.comment-time { font-size: 0.75rem; color: hsl(var(--muted-foreground)); }
+.comment-del { margin-left: auto; background: none; border: none; cursor: pointer; font-size: 0.75rem; color: hsl(var(--muted-foreground)); padding: 0; opacity: 0; transition: opacity 0.12s; }
+.comment-item:hover .comment-del { opacity: 1; }
+.comment-del:hover { color: hsl(var(--destructive)); }
+.comment-text { font-size: 0.875rem; line-height: 1.55; color: hsl(var(--foreground)); padding-left: 2.125rem; }
+.comment-input-wrap { padding: 0.75rem 0 0; display: flex; gap: 0.625rem; align-items: flex-start; }
+.comment-input-avatar { width: 1.625rem; height: 1.625rem; border-radius: 9999px; background: hsl(var(--secondary)); color: hsl(var(--muted-foreground)); font-size: 0.625rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 0.25rem; }
+.comment-input-inner { flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
+.comment-ta { width: 100%; font-size: 0.875rem; font-family: inherit; border: 1px solid hsl(var(--border)); border-radius: calc(var(--radius) - 2px); padding: 0.5rem 0.75rem; resize: none; outline: none; min-height: 2.5rem; line-height: 1.5; background: hsl(var(--background)); color: hsl(var(--foreground)); transition: border-color 0.12s, box-shadow 0.12s; }
+.comment-ta:focus { border-color: hsl(var(--ring)); box-shadow: 0 0 0 2px hsl(var(--ring) / 0.1); }
+.comment-ta::placeholder { color: hsl(var(--muted-foreground)); }
+.comment-actions { display: none; justify-content: flex-end; gap: 0.5rem; }
+.comment-ta:focus ~ .comment-actions,
+.comment-actions.visible { display: flex; }
+
+/* ── App shell ── */
+.app-shell { display: flex; flex-direction: column; height: 100vh; overflow: hidden; transition: padding-right 0.22s cubic-bezier(0.4,0,0.2,1); }
+.app-shell.drawer-open { padding-right: 520px; }
+
+/* ── Top nav ── */
+.topnav { display: flex; align-items: center; padding: 0 1.25rem; height: 3.25rem; border-bottom: 1px solid hsl(var(--border)); background: hsl(var(--background)); flex-shrink: 0; gap: 0.875rem; }
+.nav-logo { font-size: 0.9375rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
+.nav-logo-mark { width: 1.375rem; height: 1.375rem; background: hsl(var(--primary)); border-radius: 0.25rem; }
+.nav-slash { color: hsl(var(--border)); font-weight: 300; font-size: 1.125rem; }
+.nav-project { font-size: 0.875rem; color: hsl(var(--muted-foreground)); font-weight: 500; }
+.nav-right { margin-left: auto; display: flex; align-items: center; gap: 0.75rem; }
+.nav-stat { font-size: 0.75rem; color: hsl(var(--muted-foreground)); }
+.nav-stat strong { color: hsl(var(--foreground)); font-weight: 600; }
+.progress { background: hsl(var(--secondary)); border-radius: 9999px; height: 0.375rem; width: 5rem; overflow: hidden; }
+.progress-bar { height: 100%; background: hsl(var(--primary)); border-radius: 9999px; transition: width 0.3s ease; }
+
+/* ── Filter bar ── */
+.filterbar { display: flex; align-items: center; gap: 0.375rem; padding: 0.5rem 1.25rem; border-bottom: 1px solid hsl(var(--border)); background: hsl(var(--background)); flex-shrink: 0; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.filterbar::-webkit-scrollbar { display: none; }
+.filter-label { font-size: 0.75rem; color: hsl(var(--muted-foreground)); font-weight: 500; margin-right: 0.25rem; flex-shrink: 0; }
+.filter-btn { font-size: 0.75rem; font-weight: 500; font-family: inherit; padding: 0.25rem 0.625rem; border-radius: calc(var(--radius) - 2px); border: 1px solid hsl(var(--border)); background: transparent; color: hsl(var(--muted-foreground)); cursor: pointer; transition: all 0.12s; white-space: nowrap; flex-shrink: 0; }
+.filter-btn:hover { background: hsl(var(--accent)); color: hsl(var(--foreground)); }
+.filter-btn.active { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-color: hsl(var(--primary)); }
+
+/* ── Views ── */
+.views { flex: 1; overflow: hidden; display: flex; flex-direction: column; min-height: 0; }
+.view { display: none; flex: 1; overflow: hidden; min-height: 0; }
+.view.active { display: flex; flex-direction: column; }
+
+/* ── Board ── */
+.board-scroll { flex: 1; overflow-x: auto; overflow-y: hidden; padding: 1rem 1.25rem; display: flex; gap: 0.75rem; align-items: flex-start; -webkit-overflow-scrolling: touch; }
+.board-col { width: 20rem; flex-shrink: 0; background: hsl(var(--card)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); box-shadow: 0 1px 2px rgb(0 0 0 / 0.04); display: flex; flex-direction: column; max-height: calc(100vh - 8.5rem); overflow: hidden; }
+.col-hdr { padding: 0.75rem 0.875rem 0.625rem; border-bottom: 1px solid hsl(var(--border)); flex-shrink: 0; }
+.col-hdr-top { display: flex; align-items: center; gap: 0.5rem; }
+.col-indicator { width: 0.5rem; height: 0.5rem; border-radius: 9999px; flex-shrink: 0; }
+.col-hdr-title { font-size: 0.8125rem; font-weight: 600; flex: 1; }
+.col-hdr-count { font-size: 0.75rem; color: hsl(var(--muted-foreground)); }
+.col-body { flex: 1; overflow-y: auto; padding: 0.5rem; -webkit-overflow-scrolling: touch; }
+.col-body::-webkit-scrollbar { width: 2px; }
+.col-body::-webkit-scrollbar-thumb { background: hsl(var(--border)); }
+.col-body.drag-target { background: hsl(var(--muted) / 0.5); }
+.col-empty { font-size: 0.75rem; color: hsl(var(--muted-foreground)); text-align: center; padding: 1rem 0.25rem; }
+.q-group { margin-bottom: 0.625rem; }
+.q-label { font-size: 0.6875rem; font-weight: 500; color: hsl(var(--muted-foreground)); margin-bottom: 0.375rem; display: flex; align-items: center; gap: 0.5rem; }
+.q-label-line { flex: 1; height: 1px; background: hsl(var(--border)); }
+
+/* ── Expenses ── */
+.filterbar.hidden { display: none; }
+.exp-scroll { flex: 1; overflow-y: auto; padding: 1.25rem; -webkit-overflow-scrolling: touch; }
+.exp-summary { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.exp-card { flex: 1; min-width: 9rem; background: hsl(var(--card)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); padding: 0.875rem 1rem; box-shadow: 0 1px 2px rgb(0 0 0 / 0.04); }
+.exp-card-wide { flex: 2; min-width: 18rem; }
+.exp-card-label { font-size: 0.75rem; color: hsl(var(--muted-foreground)); margin-bottom: 0.25rem; }
+.exp-card-value { font-size: 1.375rem; font-weight: 600; letter-spacing: -0.01em; }
+.exp-table-scroll { background: hsl(var(--card)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); overflow: auto; box-shadow: 0 1px 2px rgb(0 0 0 / 0.04); }
+.exp-table { width: 100%; min-width: 56rem; border-collapse: collapse; font-size: 0.8125rem; }
+.exp-table th { text-align: left; font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: hsl(var(--muted-foreground)); padding: 0.625rem 0.625rem; border-bottom: 1px solid hsl(var(--border)); background: hsl(var(--muted) / 0.5); white-space: nowrap; }
+.exp-table td { padding: 0.25rem 0.375rem; border-bottom: 1px solid hsl(var(--border)); vertical-align: middle; }
+.exp-table tbody tr:last-child td { border-bottom: none; }
+.exp-table tbody tr:hover { background: hsl(var(--accent) / 0.4); }
+.exp-table th:last-child, .exp-table td:last-child { width: 2.25rem; }
+.exp-table th:first-child, .exp-table td:first-child { width: 1.5rem; }
+.exp-table th:nth-child(2), .exp-table td:nth-child(2) { width: 2.25rem; }
+.exp-check-cell { text-align: center; }
+.exp-check { width: 1rem; height: 1rem; cursor: pointer; accent-color: hsl(var(--primary)); }
+.exp-drag-cell { text-align: center; color: hsl(var(--muted-foreground)); }
+.exp-drag-handle { display: inline-flex; align-items: center; justify-content: center; cursor: grab; padding: 0.25rem; }
+.exp-drag-handle:active { cursor: grabbing; }
+#exp-tbody tr.exp-row-dragging { opacity: 0.4; }
+#exp-tbody tr.exp-row-over-above td { box-shadow: inset 0 2px 0 0 hsl(213 94% 52%); }
+#exp-tbody tr.exp-row-over-below td { box-shadow: inset 0 -2px 0 0 hsl(213 94% 52%); }
+.exp-cell { width: 100%; border: 1px solid transparent; background: transparent; font: inherit; color: inherit; padding: 0.5rem 0.5rem; border-radius: calc(var(--radius) - 4px); transition: border-color .12s, background .12s; }
+.exp-cell:hover { border-color: hsl(var(--border)); }
+.exp-cell:focus { outline: none; border-color: hsl(var(--ring)); background: hsl(var(--background)); box-shadow: 0 0 0 2px hsl(var(--ring) / 0.1); }
+.exp-cell.exp-num { text-align: right; font-variant-numeric: tabular-nums; }
+.exp-status-select { font-size: 0.6875rem; font-weight: 600; border-radius: 9999px; border: 1px solid transparent; padding: 0.25rem 1.375rem 0.25rem 0.625rem; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.5rem center; }
+.exp-status-assumption { background: hsl(280 60% 95%); color: hsl(280 50% 40%); border-color: hsl(280 50% 84%); }
+.exp-status-quote    { background: hsl(var(--secondary)); color: hsl(var(--muted-foreground)); border-color: hsl(var(--border)); }
+.exp-status-approved { background: hsl(38 92% 94%);  color: hsl(38 92% 28%);  border-color: hsl(38 92% 78%); }
+.exp-status-ordered  { background: hsl(213 94% 94%); color: hsl(213 94% 30%); border-color: hsl(213 94% 82%); }
+.exp-status-paid     { background: hsl(142 60% 91%); color: hsl(142 60% 26%); border-color: hsl(142 60% 75%); }
+.exp-del-btn { opacity: 0; transition: opacity .12s, color .12s; }
+.exp-table tbody tr:hover .exp-del-btn { opacity: 1; }
+.exp-del-btn:hover { color: hsl(var(--destructive)); }
+.exp-add-row { padding: 0.625rem 0.75rem; font-size: 0.8125rem; color: hsl(var(--muted-foreground)); cursor: pointer; display: flex; align-items: center; gap: 0.375rem; border-top: 1px solid hsl(var(--border)); }
+.exp-add-row:hover { background: hsl(var(--accent) / 0.4); color: hsl(var(--foreground)); }
+.exp-empty td { padding: 2rem; text-align: center; color: hsl(var(--muted-foreground)); font-size: 0.8125rem; }
+
+/* ── MOBILE (≤768px) ── */
+@media (max-width: 768px) {
+
+  /* shell: switch from fixed viewport to natural page scroll */
+  .app-shell { height: auto; min-height: 100dvh; overflow: visible; }
+  .app-shell.drawer-open { padding-right: 0; }
+
+  /* nav: compact — hide decorative elements */
+  .topnav { padding: 0 0.875rem; height: 3rem; gap: 0.5rem; }
+  .nav-slash, .nav-project, .nav-stat, .progress { display: none; }
+  .nav-right { gap: 0.5rem; }
+  .tabs-list { height: 2.125rem; padding: 0.2rem; }
+  .tabs-trigger { padding: 0 0.625rem; font-size: 0.8rem; height: 1.75rem; }
+  .btn-default.btn-sm { padding: 0 0.75rem; font-size: 0.8rem; height: 2rem; }
+
+  /* filter bar */
+  .filterbar { padding: 0.5rem 0.875rem; }
+
+  /* views: natural height */
+  .views { overflow: visible; flex: none; display: block; }
+  .view { overflow: visible; flex: none; display: none; }
+  .view.active { display: block; }
+
+  /* board: vertical stack, full-width columns */
+  .board-scroll {
+    overflow: visible; flex-direction: column;
+    padding: 0.75rem 0.875rem 2rem; gap: 0.75rem;
+    align-items: stretch; display: block;
+  }
+  .board-scroll > .board-col { display: flex; width: 100%; margin-bottom: 0.75rem; }
+  .board-col { width: 100%; max-height: none; overflow: visible; }
+  .col-body { overflow: visible; max-height: none; }
+
+  /* cards: bigger tap targets */
+  .card-main { padding: 0.75rem 0.75rem 0.375rem; gap: 0.5rem; }
+  .card-cb { width: 1.125rem; height: 1.125rem; }
+  .card-title { font-size: 0.875rem; }
+  .drag-handle { display: none; }
+
+  /* child chips */
+  .child-chip { padding: 0.375rem 0.625rem; }
+  .child-chip-title { font-size: 0.8125rem; }
+
+  /* timeline: horizontal + vertical scroll */
+  .tl-wrap { overflow-x: auto; overflow-y: visible; -webkit-overflow-scrolling: touch; height: auto; }
+  .tl-inner { padding: 0.75rem 0 2rem; }
+
+  /* drawer: full screen */
+  .drawer {
+    width: 100%;
+    top: 0; right: 0; bottom: 0;
+    border-left: none;
+  }
+  /* close via the X button — scrim stays hidden on mobile */
+  .drawer-scrim.open { background: transparent; }
+
+  /* dialog: full width */
+  .dialog-content {
+    width: calc(100vw - 1.5rem);
+    max-width: calc(100vw - 1.5rem);
+    padding: 1.25rem 1rem;
+  }
+  .form-row { grid-template-columns: 1fr; }
+
+  /* prop rows */
+  .prop-key { width: 6.5rem; font-size: 0.75rem; }
+
+  /* subtask add row */
+  .subtask-add-input { font-size: 0.875rem; }
+
+  /* always show comment delete on touch */
+  .comment-del { opacity: 1; }
+  .subtask-card-del { opacity: 1; }
+}
+
+@media (max-width: 400px) {
+  .topnav { padding: 0 0.75rem; }
+  .filterbar { padding: 0.4rem 0.75rem; gap: 0.25rem; }
+  .filter-btn { padding: 0.2rem 0.5rem; font-size: 0.6875rem; }
+  .board-scroll { padding: 0.625rem 0.75rem 2rem; }
+}
+
+/* ── Task card ── */
+.task-card { background: hsl(var(--background)); border: 1px solid hsl(var(--border)); border-radius: calc(var(--radius) - 2px); margin-bottom: 0.375rem; cursor: pointer; transition: border-color 0.12s, box-shadow 0.12s, opacity 0.12s; user-select: none; }
+.task-card:hover { border-color: hsl(240 5.9% 78%); box-shadow: 0 1px 4px rgb(0 0 0 / 0.06); }
+.task-card.status-done { opacity: 0.45; }
+.task-card.drag-over-above { border-top: 2px solid hsl(213 94% 52%); }
+.task-card.drag-over-below { border-bottom: 2px solid hsl(213 94% 52%); }
+.task-card.dragging { opacity: 0.35; box-shadow: 0 4px 16px rgb(0 0 0 / 0.15); }
+
+.card-main { display: flex; align-items: flex-start; gap: 0.375rem; padding: 0.625rem 0.625rem 0.375rem; }
+.drag-handle { color: hsl(var(--muted-foreground)); opacity: 0; cursor: grab; flex-shrink: 0; margin-top: 0.125rem; transition: opacity 0.12s; padding: 0.125rem; }
+.task-card:hover .drag-handle { opacity: 1; }
+.drag-handle:active { cursor: grabbing; }
+.card-cb { width: 0.9375rem; height: 0.9375rem; border-radius: 0.25rem; border: 1px solid hsl(var(--border)); background: hsl(var(--background)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 0.125rem; transition: background 0.12s, border-color 0.12s; }
+.task-card.status-done .card-cb { background: hsl(var(--primary)); border-color: hsl(var(--primary)); }
+.card-title { font-size: 0.8125rem; line-height: 1.4; flex: 1; }
+.task-card.status-done .card-title { text-decoration: line-through; color: hsl(var(--muted-foreground)); }
+
+.card-meta { display: flex; align-items: center; gap: 0.375rem; padding: 0 0.625rem 0.5rem; flex-wrap: wrap; }
+.card-due { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.6875rem; font-weight: 500; }
+
+.tl-wrap { flex: 1; overflow: auto; }
+.tl-inner { min-width: max-content; padding: 1rem 1.25rem 2rem; }
+.tl-hdr { display: grid; grid-template-columns: 17rem 2080px; border-bottom: 1px solid hsl(var(--border)); position: sticky; top: 0; background: hsl(var(--background)); z-index: 10; }
+.tl-corner { padding: 0.375rem 0 0.75rem; font-size: 0.6875rem; font-weight: 500; color: hsl(var(--muted-foreground)); align-self: end; position: sticky; left: 0; background: hsl(var(--background)); z-index: 11; }
+.tl-months-hdr { display: grid; grid-template-columns: repeat(40, 52px); }
+.tl-m { border-left: 1px solid hsl(var(--border)); text-align: center; padding: 0.125rem 0.25rem 0.5rem; }
+.tl-m-second { border-left: 1px dashed hsl(var(--border)); }
+.tl-q-tag { font-size: 0.6875rem; font-weight: 700; display: block; margin-bottom: 0.05rem; white-space: nowrap; }
+.tl-q-sub { font-size: 0.625rem; color: hsl(var(--muted-foreground)); display: block; margin-bottom: 0.2rem; white-space: nowrap; }
+.tl-m-name { font-size: 0.6875rem; font-weight: 600; color: hsl(var(--foreground)); display: block; white-space: nowrap; }
+.tl-m-yr { font-weight: 400; color: hsl(var(--muted-foreground)); }
+.tl-half-lbl { font-size: 0.625rem; color: hsl(var(--muted-foreground)); display: block; margin-top: 0.125rem; }
+.tl-cat-hdr { display: grid; grid-template-columns: 17rem 2080px; background: hsl(var(--muted)/0.6); border-top: 1px solid hsl(var(--border)); border-bottom: 1px dashed hsl(var(--border)); margin-top: 0.375rem; align-items: center; min-height: 2.125rem; }
+.tl-cat-cell { padding: 0.5rem 0.75rem; display: flex; align-items: center; gap: 0.5rem; position: sticky; left: 0; background: hsl(240 4.8% 95%); z-index: 5; }
+.tl-cat-dot { width: 0.5rem; height: 0.5rem; border-radius: 9999px; flex-shrink: 0; }
+.tl-cat-name { font-size: 0.8125rem; font-weight: 600; }
+.tl-cat-count { font-size: 0.6875rem; color: hsl(var(--muted-foreground)); margin-left: auto; }
+.tl-task-row { display: grid; grid-template-columns: 17rem 2080px; border-bottom: 1px solid hsl(var(--border)); align-items: stretch; min-height: 2.5rem; transition: background 0.1s; }
+.tl-task-row:hover { background: hsl(var(--accent)/0.4); }
+.tl-task-row.status-done .tl-task-name { text-decoration: line-through; color: hsl(var(--muted-foreground)); }
+.tl-name-cell { padding: 0.375rem 0.75rem; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; position: sticky; left: 0; background: hsl(var(--background)); border-right: 1px solid hsl(var(--border)); z-index: 5; }
+.tl-task-row:hover .tl-name-cell { background: hsl(var(--accent) / 0.55); }
+.tl-cb { width: 0.9375rem; height: 0.9375rem; border-radius: 0.25rem; border: 1px solid hsl(var(--border)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.12s; }
+.tl-task-row.status-done .tl-cb { background: hsl(var(--primary)); border-color: hsl(var(--primary)); }
+.tl-task-name { font-size: 0.8125rem; flex: 1; line-height: 1.35; }
+.tl-note-dot { width: 0.375rem; height: 0.375rem; border-radius: 9999px; flex-shrink: 0; }
+.tl-chevron { font-size: 0.625rem; color: hsl(var(--muted-foreground)); background: none; border: none; cursor: pointer; padding: 0 0.125rem; flex-shrink: 0; }
+
+/* bar area — 40 half-month slots */
+.tl-bars-area {
+  position: relative;
+  /* solid line every month (every 2 slots), dashed line at 16th */
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      hsl(var(--border)) 0px, hsl(var(--border)) 1px,
+      transparent 1px, transparent calc(100% / 40)
+    );
+  user-select: none;
+}
+.tl-gantt-bar {
+  position: absolute;
+  top: 0.45rem; bottom: 0.45rem;
+  border-radius: 4px;
+  display: flex; align-items: center;
+  cursor: grab;
+  transition: filter 0.1s;
+  min-width: 4px;
+}
+.tl-gantt-bar:active { cursor: grabbing; filter: brightness(0.88); }
+.tl-gantt-bar.dragging { filter: brightness(0.85); box-shadow: 0 2px 8px rgb(0 0 0 / 0.18); }
+.tl-bar-handle {
+  width: 6px; height: 100%;
+  cursor: ew-resize;
+  flex-shrink: 0;
+  border-radius: inherit;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+.tl-gantt-bar:hover .tl-bar-handle { opacity: 1; }
+.tl-bar-handle-inner { width: 2px; height: 60%; background: rgba(255,255,255,0.55); border-radius: 2px; }
+.tl-bar-label { flex: 1; font-size: 0.6875rem; font-weight: 500; color: rgba(255,255,255,0.9); padding: 0 0.375rem; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; pointer-events: none; }
+.tl-bar-dates { font-size: 0.625rem; color: rgba(255,255,255,0.7); padding-right: 0.375rem; white-space: nowrap; pointer-events: none; flex-shrink: 0; }
+
+/* subtask timeline rows */
+.tl-subtask-row {
+  display: grid; grid-template-columns: 17rem 2080px;
+  border-bottom: 1px solid hsl(var(--border));
+  align-items: stretch; min-height: 2.125rem;
+  background: hsl(var(--muted) / 0.25);
+  transition: background 0.1s;
+}
+.tl-subtask-row:hover { background: hsl(var(--accent) / 0.35); }
+.tl-subtask-row.status-done .tl-subtask-name { text-decoration: line-through; color: hsl(var(--muted-foreground)); }
+.tl-subtask-name-cell {
+  padding: 0.3rem 0.75rem 0.3rem 2rem; /* indent */
+  display: flex; align-items: center; gap: 0.5rem;
+  cursor: pointer;
+  position: sticky; left: 0;
+  background: hsl(var(--muted) / 0.25);
+  border-right: 1px solid hsl(var(--border));
+  z-index: 5;
+}
+.tl-subtask-row:hover .tl-subtask-name-cell { background: hsl(var(--accent) / 0.45); }
+.tl-subtask-connector {
+  width: 0.75rem; height: 1px;
+  background: hsl(var(--border));
+  flex-shrink: 0; margin-left: -0.75rem;
+}
+.tl-subtask-name { font-size: 0.75rem; flex: 1; line-height: 1.35; color: hsl(var(--muted-foreground)); }
+.tl-subtask-cb {
+  width: 0.875rem; height: 0.875rem;
+  border-radius: 0.2rem; border: 1px solid hsl(var(--border));
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all 0.12s;
+}
+.tl-subtask-row.status-done .tl-subtask-cb { background: hsl(var(--primary)); border-color: hsl(var(--primary)); }
+
+/* ── Subtask cards in drawer ── */
+.subtask-section { padding: 0.875rem 1.25rem; }
+.subtask-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+.subtask-title-label { font-size: 0.75rem; font-weight: 600; color: hsl(var(--muted-foreground)); text-transform: uppercase; letter-spacing: 0.05em; }
+.subtask-progress-wrap { display: flex; align-items: center; gap: 0.5rem; }
+.subtask-progress-bar { height: 4px; width: 4rem; background: hsl(var(--secondary)); border-radius: 9999px; overflow: hidden; }
+.subtask-progress-fill { height: 100%; background: hsl(142 60% 40%); border-radius: 9999px; transition: width 0.25s ease; }
+.subtask-progress-label { font-size: 0.75rem; color: hsl(var(--muted-foreground)); font-weight: 500; white-space: nowrap; }
+
+.subtask-cards { display: flex; flex-direction: column; gap: 0.375rem; margin-bottom: 0.625rem; }
+.subtask-card {
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+  border-left-width: 2px;
+  border-radius: calc(var(--radius) - 2px);
+  padding: 0.5rem 0.625rem;
+  cursor: pointer;
+  transition: border-color 0.12s, box-shadow 0.12s;
+  display: flex; align-items: flex-start; gap: 0.5rem;
+}
+.subtask-card:hover { border-color: hsl(240 5.9% 78%); box-shadow: 0 1px 4px rgb(0 0 0 / 0.06); }
+.subtask-card.status-done { opacity: 0.45; }
+.subtask-card-cb {
+  width: 0.9375rem; height: 0.9375rem;
+  border-radius: 0.25rem; border: 1px solid hsl(var(--border));
+  background: hsl(var(--background));
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 0.125rem;
+  transition: background 0.12s, border-color 0.12s; cursor: pointer;
+}
+.subtask-card.status-done .subtask-card-cb { background: hsl(var(--primary)); border-color: hsl(var(--primary)); }
+.subtask-card-body { flex: 1; min-width: 0; }
+.subtask-card-title { font-size: 0.8125rem; line-height: 1.4; color: hsl(var(--foreground)); }
+.subtask-card.status-done .subtask-card-title { text-decoration: line-through; color: hsl(var(--muted-foreground)); }
+.subtask-card-meta { display: flex; align-items: center; gap: 0.375rem; margin-top: 0.25rem; flex-wrap: wrap; }
+.subtask-card-del {
+  opacity: 0; background: none; border: none; cursor: pointer;
+  color: hsl(var(--muted-foreground)); font-size: 1rem; padding: 0;
+  line-height: 1; flex-shrink: 0; transition: opacity 0.12s, color 0.12s;
+  display: flex; align-items: center; justify-content: center;
+  width: 1.25rem; height: 1.25rem; border-radius: calc(var(--radius) - 4px);
+}
+.subtask-card:hover .subtask-card-del { opacity: 1; }
+.subtask-card-del:hover { color: hsl(var(--destructive)); background: hsl(var(--destructive) / 0.08); }
+
+.subtask-add-row { display: flex; align-items: center; gap: 0.5rem; padding: 0.375rem 0.25rem; border: 1px dashed hsl(var(--border)); border-radius: calc(var(--radius) - 2px); cursor: text; transition: border-color 0.12s; }
+.subtask-add-row:focus-within { border-color: hsl(var(--ring)); border-style: solid; }
+.subtask-add-icon { color: hsl(var(--muted-foreground)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; padding-left: 0.375rem; }
+.subtask-add-input { flex: 1; font-size: 0.8125rem; font-family: inherit; background: transparent; border: none; outline: none; color: hsl(var(--foreground)); padding: 0.125rem 0; }
+.subtask-add-input::placeholder { color: hsl(var(--muted-foreground)); }
+
+/* Child chips on board cards */
+.child-chips {
+  padding: 0 0.625rem 0.5rem 1.75rem; /* indent to align under title */
+  display: flex; flex-direction: column; gap: 0.25rem;
+  position: relative;
+}
+.child-chips::before {
+  content: '';
+  position: absolute;
+  left: 1.125rem; top: 0; bottom: 0.5rem;
+  width: 1px;
+  background: hsl(var(--border));
+}
+.child-chip {
+  display: flex; align-items: center; gap: 0.375rem;
+  background: hsl(var(--muted) / 0.6);
+  border: 1px solid hsl(var(--border));
+  border-radius: calc(var(--radius) - 4px);
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+  position: relative;
+}
+.child-chip::before {
+  content: '';
+  position: absolute;
+  left: -0.625rem; top: 50%;
+  width: 0.5rem; height: 1px;
+  background: hsl(var(--border));
+}
+.child-chip:hover { background: hsl(var(--accent)); border-color: hsl(240 5.9% 78%); }
+.child-chip.status-done { opacity: 0.45; }
+.child-chip-cb {
+  width: 0.8125rem; height: 0.8125rem;
+  border-radius: 0.2rem; border: 1px solid hsl(var(--border));
+  background: hsl(var(--background));
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+.child-chip.status-done .child-chip-cb { background: hsl(var(--primary)); border-color: hsl(var(--primary)); }
+.child-chip-title {
+  font-size: 0.75rem; line-height: 1.3; flex: 1;
+  color: hsl(var(--foreground));
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.child-chip.status-done .child-chip-title { text-decoration: line-through; color: hsl(var(--muted-foreground)); }
+.child-chip-due { flex-shrink: 0; }
+
+/* Sub-drawer nav */
+.subdrawer-back { display: flex; align-items: center; gap: 0.375rem; font-size: 0.8125rem; color: hsl(var(--muted-foreground)); background: none; border: none; cursor: pointer; font-family: inherit; padding: 0; transition: color 0.12s; }
+.subdrawer-back:hover { color: hsl(var(--foreground)); }
+.subdrawer-crumb { font-size: 0.75rem; color: hsl(var(--muted-foreground)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 12rem; }
+::-webkit-scrollbar { width: 5px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground)); }
+
+/* ── Color swatches ── */
+.color-swatches { display: flex; flex-wrap: wrap; gap: 0.375rem; margin-top: 0.25rem; }
+.color-swatch { width: 1.75rem; height: 1.75rem; border-radius: 0.375rem; border: 2.5px solid transparent; cursor: pointer; transition: transform 0.1s, border-color 0.1s, box-shadow 0.1s; flex-shrink: 0; }
+.color-swatch:hover { transform: scale(1.15); box-shadow: 0 1px 4px rgb(0 0 0 / 0.15); }
+.color-swatch.selected { border-color: hsl(var(--foreground)); transform: scale(1.15); }
+
+/* ── Inline add-task row ── */
+.col-add-row { padding: 0.375rem 0.5rem; }
+.col-add-btn { display: flex; align-items: center; gap: 0.375rem; width: 100%; padding: 0.375rem 0.375rem; border-radius: calc(var(--radius) - 2px); border: none; background: transparent; color: hsl(var(--muted-foreground)); font-size: 0.8125rem; font-family: inherit; cursor: pointer; transition: background 0.12s, color 0.12s; text-align: left; }
+.col-add-btn:hover { background: hsl(var(--accent)); color: hsl(var(--foreground)); }
+.col-add-input-wrap { display: none; flex-direction: column; gap: 0.375rem; padding: 0.375rem 0.25rem; }
+.col-add-input-wrap.open { display: flex; }
+.col-add-input { width: 100%; font-size: 0.8125rem; font-family: inherit; border: 1px solid hsl(var(--ring)); border-radius: calc(var(--radius) - 2px); padding: 0.4rem 0.6rem; outline: none; background: hsl(var(--background)); color: hsl(var(--foreground)); box-shadow: 0 0 0 2px hsl(var(--ring) / 0.1); resize: none; line-height: 1.45; }
+.col-add-hint { font-size: 0.6875rem; color: hsl(var(--muted-foreground)); }
+
+/* ── Add category column ── */
+.board-col-add { width: 14rem; flex-shrink: 0; padding-top: 0.25rem; }
+.board-add-col-btn { width: 100%; padding: 0.75rem 1rem; border: 1.5px dashed hsl(var(--border)); border-radius: var(--radius); background: transparent; color: hsl(var(--muted-foreground)); font-size: 0.8125rem; font-weight: 500; font-family: inherit; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: background 0.12s, color 0.12s, border-color 0.12s; }
+.board-add-col-btn:hover { background: hsl(var(--accent)); color: hsl(var(--foreground)); border-color: hsl(240 5.9% 75%); border-style: solid; }
+
+/* ── Column rename / delete ── */
+.col-hdr-menu { position: relative; }
+.col-menu-btn { background: none; border: none; cursor: pointer; color: hsl(var(--muted-foreground)); padding: 0.125rem; border-radius: 0.25rem; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.12s, background 0.12s; }
+.board-col:hover .col-menu-btn { opacity: 1; }
+.col-menu-btn:hover { background: hsl(var(--accent)); color: hsl(var(--foreground)); }
+.col-dropdown { position: absolute; top: 100%; right: 0; z-index: 50; background: hsl(var(--background)); border: 1px solid hsl(var(--border)); border-radius: calc(var(--radius) - 2px); box-shadow: 0 4px 12px rgb(0 0 0 / 0.1); min-width: 10rem; padding: 0.25rem; display: none; }
+.col-dropdown.open { display: block; }
+.col-dropdown-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.625rem; border-radius: calc(var(--radius) - 4px); font-size: 0.8125rem; cursor: pointer; color: hsl(var(--foreground)); background: none; border: none; width: 100%; font-family: inherit; text-align: left; transition: background 0.1s; }
+.col-dropdown-item:hover { background: hsl(var(--accent)); }
+.col-dropdown-item.danger { color: hsl(var(--destructive)); }
+.col-dropdown-item.danger:hover { background: hsl(var(--destructive) / 0.08); }
+
+/* Icons inline */
+svg { flex-shrink: 0; }
+
+/* ── File attachments in comments ── */
+.comment-ta-wrap { position: relative; }
+.comment-ta-wrap.drag-over .comment-ta { border-color: hsl(var(--ring)); box-shadow: 0 0 0 2px hsl(var(--ring) / 0.12); }
+.comment-ta-wrap.drag-over::after { content: 'Drop files here'; position: absolute; inset: 0; background: hsl(var(--ring) / 0.07); border: 2px dashed hsl(var(--ring)); border-radius: calc(var(--radius) - 2px); display: flex; align-items: center; justify-content: center; font-size: 0.8125rem; color: hsl(213 94% 42%); font-weight: 500; pointer-events: none; }
+.attach-previews { display: flex; flex-wrap: wrap; gap: 0.375rem; margin-top: 0.375rem; }
+.attach-previews:empty { display: none; }
+.attach-preview-img { position: relative; width: 4rem; height: 4rem; border-radius: calc(var(--radius) - 2px); overflow: hidden; border: 1px solid hsl(var(--border)); flex-shrink: 0; }
+.attach-preview-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.attach-preview-chip { display: flex; align-items: center; gap: 0.3rem; background: hsl(var(--secondary)); border: 1px solid hsl(var(--border)); border-radius: calc(var(--radius) - 2px); padding: 0.2rem 0.5rem; font-size: 0.75rem; max-width: 11rem; }
+.attach-preview-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; flex: 1; }
+.attach-remove { background: none; border: none; cursor: pointer; color: hsl(var(--muted-foreground)); padding: 0; line-height: 1; font-size: 0.875rem; flex-shrink: 0; transition: color 0.1s; }
+.attach-remove:hover { color: hsl(var(--destructive)); }
+.comment-attachments { padding-left: 2.125rem; margin-top: 0.375rem; display: flex; flex-wrap: wrap; gap: 0.375rem; }
+.comment-attach-img { max-width: 100%; max-height: 180px; border-radius: calc(var(--radius) - 2px); border: 1px solid hsl(var(--border)); cursor: zoom-in; display: block; }
+.comment-attach-file { display: inline-flex; align-items: center; gap: 0.375rem; background: hsl(var(--secondary)); border: 1px solid hsl(var(--border)); border-radius: calc(var(--radius) - 2px); padding: 0.25rem 0.625rem; font-size: 0.75rem; color: hsl(var(--foreground)); text-decoration: none; }
+.comment-attach-file:hover { background: hsl(var(--accent)); }
+
+/* ── Loading / Toast ── */
+.loading-overlay { position: fixed; inset: 0; background: hsl(var(--background)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.875rem; z-index: 300; }
+.loading-overlay.hidden { display: none; }
+.loading-spinner { width: 1.5rem; height: 1.5rem; border: 2px solid hsl(var(--border)); border-top-color: hsl(var(--primary)); border-radius: 50%; animation: spin 0.65s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { font-size: 0.875rem; color: hsl(var(--muted-foreground)); }
+.sb-toast { position: fixed; bottom: 1.25rem; left: 50%; transform: translateX(-50%); font-size: 0.875rem; padding: 0.625rem 1rem; border-radius: var(--radius); z-index: 400; display: none; align-items: center; gap: 0.5rem; box-shadow: 0 4px 12px rgb(0 0 0 / 0.15); white-space: nowrap; }
+.sb-toast.visible { display: flex; }
+.sb-toast-error { background: hsl(var(--destructive)); color: hsl(var(--destructive-foreground)); }
+.sb-toast-ok { background: hsl(142 60% 32%); color: #fff; }
+</style>
+</head>
+<body>
+
+<div class="app-shell" id="app">
+  <nav class="topnav">
+    <div class="nav-logo"><div class="nav-logo-mark"></div>SORT</div>
+    <span class="nav-slash">/</span>
+    <span class="nav-project">Project Board</span>
+    <div class="tabs-list" style="margin-left:0.25rem">
+      <button class="tabs-trigger active" id="tb-board" onclick="switchTab('board')">Board</button>
+      <button class="tabs-trigger" id="tb-tl" onclick="switchTab('timeline')">Timeline</button>
+      <button class="tabs-trigger" id="tb-exp" onclick="switchTab('expenses')">Expenses</button>
+    </div>
+    <div class="nav-right">
+      <div class="progress"><div class="progress-bar" id="prog-bar"></div></div>
+      <span class="nav-stat" id="nav-stat"></span>
+      <button class="btn btn-default btn-sm" onclick="openAddModal()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+        Add task
+      </button>
+    </div>
+  </nav>
+
+  <div class="filterbar">
+    <span class="filter-label">Period</span>
+    <button class="filter-btn active" id="fq-all" onclick="setFilter('all',this)">All</button>
+    <button class="filter-btn" onclick="setFilter(1,this)">Q1 · May–Jul 2026</button>
+    <button class="filter-btn" onclick="setFilter(2,this)">Q2 · Aug–Oct 2026</button>
+    <button class="filter-btn" onclick="setFilter(3,this)">Q3 · Nov 2026–Jan 2027</button>
+    <button class="filter-btn" onclick="setFilter(4,this)">Q4 · Feb–Apr 2027</button>
+    <button class="filter-btn" onclick="setFilter(5,this)">Q5 · May–Aug 2027</button>
+    <button class="filter-btn" onclick="setFilter(6,this)">Q6 · Sep–Dec 2027</button>
+    <div style="width:1px;height:1.125rem;background:hsl(var(--border));flex-shrink:0;margin:0 0.25rem"></div>
+    <span class="filter-label">Status</span>
+    <button class="filter-btn active" id="fs-all"        onclick="setStatusFilter('all',this)">All</button>
+    <button class="filter-btn"        id="fs-todo"       onclick="setStatusFilter('todo',this)">To do</button>
+    <button class="filter-btn"        id="fs-inprogress" onclick="setStatusFilter('in-progress',this)">In progress</button>
+    <button class="filter-btn"        id="fs-done"       onclick="setStatusFilter('done',this)">Done</button>
+  </div>
+
+  <div class="views">
+    <div class="view active" id="v-board">
+      <div class="board-scroll" id="board"></div>
+    </div>
+    <div class="view" id="v-tl">
+      <div class="tl-wrap"><div class="tl-inner" id="tlt"></div></div>
+    </div>
+    <div class="view" id="v-exp">
+      <div class="exp-scroll">
+        <div class="exp-summary" id="exp-summary"></div>
+        <div class="exp-table-scroll">
+          <table class="exp-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th title="Include in Estimated Total Cost"></th>
+                <th>Item</th>
+                <th>Vendor</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Quoted (CAD)</th>
+                <th>Actual (CAD)</th>
+                <th>Date</th>
+                <th>Notes</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="exp-tbody"></tbody>
+          </table>
+          <div class="exp-add-row" onclick="addExpenseRow()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+            Add line item
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading overlay -->
+<div class="loading-overlay" id="loading-overlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Connecting to database…</div>
+</div>
+<div class="sb-toast" id="sb-toast"></div>
+
+<!-- Drawer scrim -->
+<div class="drawer-scrim" id="drawer-scrim" onclick="if(window.innerWidth>768)closeDrawer()"></div>
+
+<!-- Drawer -->
+<div class="drawer" id="drawer"></div>
+
+<!-- New category dialog -->
+<div class="dialog-overlay hidden" id="new-cat-dialog">
+  <div class="dialog-content">
+    <div class="dialog-title">New category board</div>
+    <div class="dialog-desc">Create a new column to group related tasks.</div>
+    <div class="form-group">
+      <label class="label" for="ncat-name">Name</label>
+      <input class="input" id="ncat-name" type="text" placeholder="e.g. Research & Strategy" autocomplete="off" maxlength="40">
+    </div>
+    <div class="form-group">
+      <label class="label">Color</label>
+      <div class="color-swatches" id="ncat-swatches"></div>
+    </div>
+    <div class="dialog-footer">
+      <button class="btn btn-outline" onclick="closeNewCatDialog()">Cancel</button>
+      <button class="btn btn-default" onclick="saveNewCat()">Create board</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add task dialog -->
+<div class="dialog-overlay hidden" id="add-dialog">
+  <div class="dialog-content">
+    <div class="dialog-title">New task</div>
+    <div class="dialog-desc">Add a task to the project board.</div>
+    <div class="form-group">
+      <label class="label" for="ft">Description</label>
+      <input class="input" id="ft" type="text" placeholder="Describe the task clearly…" autocomplete="off">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="label" for="fc">Category</label>
+        <select class="select" id="fc"></select>
+      </div>
+      <div class="form-group">
+        <label class="label" for="fq">Quarter</label>
+        <select class="select" id="fq">
+          <option value="1">Q1 — May–Jul 2026</option>
+          <option value="2">Q2 — Aug–Oct 2026</option>
+          <option value="3">Q3 — Nov–Jan 2027</option>
+          <option value="4">Q4 — Feb–Apr 2027</option>
+          <option value="5">Q5 — May–Aug 2027</option>
+          <option value="6">Q6 — Sep–Dec 2027</option>
+        </select>
+      </div>
+    </div>
+    <div class="dialog-footer">
+      <button class="btn btn-outline" onclick="closeAddModal()">Cancel</button>
+      <button class="btn btn-default" onclick="saveNewTask()">Add task</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ─── Constants ─── */
+let CATS = {
+  space:     { label:'Space & Build-out',       hsl:'38 92% 40%'  },
+  legal:     { label:'Legal & Finance',         hsl:'213 94% 42%' },
+  brand:     { label:'Brand & Communications',  hsl:'15 79% 48%'  },
+  inventory: { label:'Inventory & Suppliers',   hsl:'152 60% 32%' },
+  staffing:  { label:'Staffing & Operations',   hsl:'240 5.9% 40%'},
+  community: { label:'Community & Programming', hsl:'262 83% 52%' },
+  digital:   { label:'Digital & Tech',          hsl:'186 64% 36%' },
+};
+const DEFAULT_CAT_KEYS = new Set(['space','legal','brand','inventory','staffing','community','digital']);
+
+/* ─── Category persistence ─── */
+const CUSTOM_CATS_KEY = 'sort_custom_cats';
+
+const PRESET_COLORS = [
+  '0 72% 42%',     '15 79% 48%',    '25 90% 44%',    '38 92% 40%',
+  '60 65% 34%',    '100 55% 35%',   '152 60% 32%',   '170 60% 36%',
+  '186 64% 36%',   '200 80% 40%',   '213 94% 42%',   '225 70% 48%',
+  '240 5.9% 40%',  '262 83% 52%',   '290 60% 44%',   '330 58% 44%',
+];
+let selectedPresetColor = PRESET_COLORS[10]; // default: blue
+
+function loadCustomCats() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(CUSTOM_CATS_KEY) || '{}');
+    Object.assign(CATS, stored);
+  } catch(e) {}
+}
+
+function saveCustomCats() {
+  try {
+    const custom = {};
+    Object.entries(CATS).forEach(([k,v]) => { if (!DEFAULT_CAT_KEYS.has(k)) custom[k] = v; });
+    localStorage.setItem(CUSTOM_CATS_KEY, JSON.stringify(custom));
+  } catch(e) {}
+}
+
+/* generate a safe slug from a label */
+function slugify(str) {
+  let s = str.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g,'') || 'cat';
+  // ensure uniqueness
+  if (CATS[s]) { let i = 2; while (CATS[`${s}_${i}`]) i++; s = `${s}_${i}`; }
+  return s;
+}
+
+/* ─── New-category dialog ─── */
+function openNewCatDialog() {
+  selectedPresetColor = PRESET_COLORS[10];
+  document.getElementById('ncat-name').value = '';
+  // Build swatches
+  const sw = document.getElementById('ncat-swatches');
+  sw.innerHTML = PRESET_COLORS.map((h,i) => `
+    <div class="color-swatch${i===10?' selected':''}" data-hsl="${h}"
+      style="background:hsl(${h})" title="hsl(${h})"
+      onclick="selectSwatch(this,'${h}')"></div>`).join('');
+  document.getElementById('new-cat-dialog').classList.remove('hidden');
+  setTimeout(() => document.getElementById('ncat-name').focus(), 40);
+}
+function closeNewCatDialog() {
+  document.getElementById('new-cat-dialog').classList.add('hidden');
+}
+function selectSwatch(el, hsl) {
+  document.querySelectorAll('#ncat-swatches .color-swatch').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedPresetColor = hsl;
+}
+function saveNewCat() {
+  const name = document.getElementById('ncat-name').value.trim();
+  if (!name) { document.getElementById('ncat-name').focus(); return; }
+  const key = slugify(name);
+  CATS[key] = { label: name, hsl: selectedPresetColor };
+  saveCustomCats();
+  closeNewCatDialog();
+  render();
+}
+
+/* delete a custom category (moves tasks to first default cat) */
+function deleteCat(key) {
+  if (DEFAULT_CAT_KEYS.has(key)) return;
+  const fallback = 'space';
+  tasks.forEach(t => { if (t.cat === key) { t.cat = fallback; sbUpdate(t); } });
+  delete CATS[key];
+  saveCustomCats();
+  if (drawerTaskId) { const t = byId(drawerTaskId); if (t && t.cat === key) closeDrawer(); }
+  render();
+}
+
+/* close col dropdown when clicking outside */
+document.addEventListener('click', e => {
+  if (!e.target.closest('.col-hdr-menu')) {
+    document.querySelectorAll('.col-dropdown.open').forEach(d => d.classList.remove('open'));
+  }
+});
+const QS = {
+  1:{label:'Q1',sub:'May–Jul 2026',   sm:1,  em:6},
+  2:{label:'Q2',sub:'Aug–Oct 2026',   sm:7,  em:12},
+  3:{label:'Q3',sub:'Nov 26–Jan 27',  sm:13, em:18},
+  4:{label:'Q4',sub:'Feb–Apr 2027',   sm:19, em:24},
+  5:{label:'Q5',sub:'May–Aug 2027',   sm:25, em:32},
+  6:{label:'Q6',sub:'Sep–Dec 2027',   sm:33, em:40},
+};
+const TOTAL_SLOTS = 40; // 20 months × 2 half-month slots
+
+// 20 months May 2026 → Dec 2027 — days based on real calendar (neither 2026 nor 2027 is a leap year)
+const MONTHS_META = [
+  {name:'May', yr:'\'26', days:31},{name:'Jun',yr:'\'26', days:30},{name:'Jul',yr:'\'26', days:31},{name:'Aug',yr:'\'26', days:31},
+  {name:'Sep',yr:'\'26', days:30},{name:'Oct',yr:'\'26', days:31},{name:'Nov',yr:'\'26', days:30},{name:'Dec',yr:'\'26', days:31},
+  {name:'Jan',yr:'\'27', days:31},{name:'Feb',yr:'\'27', days:28},{name:'Mar',yr:'\'27', days:31},{name:'Apr',yr:'\'27', days:30},
+  {name:'May',yr:'\'27', days:31},{name:'Jun',yr:'\'27', days:30},{name:'Jul',yr:'\'27', days:31},{name:'Aug',yr:'\'27', days:31},
+  {name:'Sep',yr:'\'27', days:30},{name:'Oct',yr:'\'27', days:31},{name:'Nov',yr:'\'27', days:30},{name:'Dec',yr:'\'27', days:31},
+];
+
+// Slot labels use the real end day of each month's second half
+const SLOT_LABELS = MONTHS_META.flatMap(m => [
+  `${m.name} 1–15 ${m.yr}`,
+  `${m.name} 16–${m.days} ${m.yr}`,
+]);
+
+// Legacy MO arrays (keep for any remaining references)
+const MO_LABELS = MONTHS_META.map(m => `${m.name} ${m.yr}`);
+const MO_SHORT  = MONTHS_META.map(m => m.name);
+const TODAY = '2026-05-04';
+
+/* ─── Data ─── */
+const rawTasks = [
+  {id:1, t:'Finalise lease and handover for 244 E 1st Ave',                              cat:'space',    q:1, status:'todo',        dueDate:'2026-05-15',notes:'',comments:[]},
+  {id:2, t:'Build out interior — plywood shelving and movable furniture',                 cat:'space',    q:1, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:3, t:'Set up risograph station and ventilation',                                    cat:'space',    q:1, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:4, t:'Source and install signage — legible from street level',                      cat:'space',    q:1, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:5, t:'Design storefront window — readable from GNW station exit',                   cat:'space',    q:2, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:6, t:'Register business entity and open business bank account',                     cat:'legal',    q:1, status:'todo',        dueDate:'2026-05-10',notes:'',comments:[]},
+  {id:7, t:'Secure commercial insurance — contents, liability, public',                   cat:'legal',    q:1, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:8, t:'Confirm zoning and obtain required retail permits',                            cat:'legal',    q:1, status:'todo',        dueDate:'2026-05-20',notes:'',comments:[]},
+  {id:9, t:'Set up accounting system and chart of accounts',                              cat:'legal',    q:1, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:10,t:'Evaluate avg basket size against Bridge scenario target',                     cat:'legal',    q:3, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:11,t:'Full-year revenue review — tracking toward $954k Bridge target?',             cat:'legal',    q:4, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:12,t:'Renegotiate supplier terms based on Year 1 volume',                           cat:'legal',    q:4, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:13,t:'Set Year 2 financial target — Realistic scenario $1.54m',                    cat:'legal',    q:4, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:14,t:'Finalise brand system: typeface pairing, palette, print references',          cat:'brand',    q:1, status:'in-progress', dueDate:'2026-06-01',notes:'',comments:[]},
+  {id:15,t:'Design and print opening collateral — cards, zine, edition 01',               cat:'brand',    q:1, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:16,t:'Write in-store object descriptions — first three',                            cat:'brand',    q:1, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:17,t:'Run first risograph edition as opening print — limited to 50',                cat:'brand',    q:2, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:18,t:'Introduce second risograph edition — collaborate with ECU student',           cat:'brand',    q:3, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:19,t:'Publish first printed document — process notes, small catalogue',             cat:'brand',    q:3, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:20,t:'Define In-House Brand output plan for Year 2',                                cat:'brand',    q:4, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:21,t:'Establish supplier accounts — paper goods, books, ceramics',                  cat:'inventory',q:1, status:'todo',        dueDate:'2026-05-25',notes:'',comments:[]},
+  {id:22,t:'Stock first wave: paper goods, books, 3–4 local ceramic makers',              cat:'inventory',q:2, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:23,t:'Stock entry-level items under $30 near the door',                             cat:'inventory',q:2, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:24,t:'Identify 2–3 local makers for ongoing consignment',                           cat:'inventory',q:2, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:25,t:'Assess which product lines earn shelf space — cull the rest',                 cat:'inventory',q:4, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:26,t:'Invite one maker into deeper in-house collaboration for 2027',                cat:'inventory',q:4, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:27,t:'Set up point-of-sale and inventory management system',                        cat:'staffing', q:1, status:'in-progress', dueDate:'2026-05-30',notes:'',comments:[]},
+  {id:28,t:'Define studio intake criteria — what Faculty will and will not take',          cat:'staffing', q:1, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:29,t:'Secure first two studio clients via existing network',                         cat:'staffing', q:1, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:30,t:'Review weekday traffic — is Transit Passerby segment converting?',            cat:'staffing', q:3, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:31,t:'Complete and document first two Studio Faculty projects',                     cat:'staffing', q:3, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:32,t:'Establish billing rhythm and project intake process',                          cat:'staffing', q:3, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:33,t:'Review staffing model — define Year 2 hire if needed',                        cat:'staffing', q:4, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:34,t:'Identify the studio client with long-term potential',                         cat:'staffing', q:4, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:35,t:"Write internal review — what worked, what didn't, what stays",                cat:'staffing', q:4, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:36,t:'Soft open — invite only, students and design professionals',                  cat:'community',q:2, status:'todo',        dueDate:'2026-08-01',notes:'',comments:[]},
+  {id:37,t:'Public opening — no event, just doors open',                                  cat:'community',q:2, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:38,t:'Reach out to ECU — propose visiting studio session or workshop',              cat:'community',q:2, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:39,t:'Host first in-store event: a print demonstration, not a party',               cat:'community',q:2, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:40,t:'Plan first pop-up Saturday — target 50+ orders',                              cat:'community',q:3, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:41,t:'Begin project that can live in-store as a proof-of-concept',                 cat:'community',q:3, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:42,t:'Run holiday buying period — extended Saturday hours to 7pm',                 cat:'community',q:4, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:43,t:'Run at least 2 pop-up Saturdays in Q4 — aim for 80+ orders each',           cat:'community',q:4, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:44,t:'Launch @sortdays Instagram — begin posting before opening',                   cat:'digital',  q:1, status:'in-progress', dueDate:'2026-05-07',notes:'',comments:[]},
+  {id:45,t:'Build simple website — location, hours, studio brief',                        cat:'digital',  q:1, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:46,t:'Set up email list and first capture mechanism',                               cat:'digital',  q:2, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:47,t:'Audit Instagram — is audience deepening or just growing?',                    cat:'digital',  q:3, status:'todo',        dueDate:'',          notes:'',comments:[]},
+  {id:48,t:'Set up analytics — foot traffic vs online traffic correlation',               cat:'digital',  q:3, status:'todo',        dueDate:'',          notes:'',comments:[]},
+];
+
+// Add startMonth/endMonth from q (in slots 1-40), and open/order flags
+let tasks = rawTasks.map((t,i) => ({
+  ...t,
+  startMonth: QS[t.q].sm,
+  endMonth:   Math.min(QS[t.q].sm + 5, QS[t.q].em),
+  open:   false,
+  tlOpen: true,
+  order: i,
+  subtasks: [],
+}));
+let nextId = 49, nextCommentId = 1000;
+
+/* ─── Supabase client ─── */
+const SB_URL = 'https://staxmzcjnytsocuoovvb.supabase.co/rest/v1';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN0YXhtemNqbnl0c29jdW9vdnZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4NjI4ODcsImV4cCI6MjA5MzQzODg4N30.gmzTf1c-cZVvBtDIVYfsSv0O4sCeo2y56mUt6eoFQ1I';
+const SB_HDR = {
+  'apikey': SB_KEY,
+  'Authorization': `Bearer ${SB_KEY}`,
+  'Content-Type': 'application/json',
+  'Prefer': 'return=representation',
+};
+
+function showLoading(v) { document.getElementById('loading-overlay').classList.toggle('hidden', !v); }
+function toast(msg, type='ok', ms=3000) {
+  const el = document.getElementById('sb-toast');
+  el.textContent = msg;
+  el.className = `sb-toast sb-toast-${type} visible`;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('visible'), ms);
+}
+
+/* migrate old month-based values (1-12) to new slot values (1-40) */
+function migrateSlot(v, q, type) {
+  if (!v) return type === 'start' ? QS[q]?.sm || 1 : QS[q]?.em || 6;
+  if (v <= 12) return type === 'start' ? (v - 1) * 2 + 1 : v * 2; // old format
+  return Math.max(1, Math.min(TOTAL_SLOTS, v)); // already slot format
+}
+
+/* shared comment formatter — supports plain text or JSON {text, attachments:[]} */
+function fmtComment(c) {
+  let text = c.text || '', attachments = [];
+  try {
+    const p = JSON.parse(text);
+    if (p && typeof p === 'object' && ('text' in p || 'attachments' in p)) {
+      text = p.text || ''; attachments = p.attachments || [];
+    }
+  } catch(e) {}
+  return {
+    id: c.id, text, attachments,
+    time: new Date(c.created_at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true})
+  };
+}
+
+/* map DB row → JS task */
+function fromDB(row, dbComments=[], dbSubtasks=[]) {
+  return {
+    id:         row.id,
+    t:          row.title,
+    cat:        row.cat,
+    q:          row.q,
+    status:     row.status || 'todo',
+    dueDate:    row.due_date || '',
+    notes:      row.notes   || '',
+    startMonth: migrateSlot(row.start_month, row.q, 'start'),
+    endMonth:   migrateSlot(row.end_month,   row.q, 'end'),
+    open:       false,
+    tlOpen:     true,
+    order:      row.sort_order  || 0,
+    comments:   dbComments.map(c => fmtComment(c)),
+    subtasks: dbSubtasks.map(s => ({
+      id:         s.id,
+      title:      s.title,
+      status:     s.status    || 'todo',
+      dueDate:    s.due_date  || '',
+      notes:      s.notes     || '',
+      startMonth: Math.max(1, Math.min(TOTAL_SLOTS, s.start_month || 1)),
+      endMonth:   Math.max(1, Math.min(TOTAL_SLOTS, s.end_month   || 6)),
+      order:      s.sort_order || 0,
+      comments:   [],  // populated after sbInit groups by subtask_id
+    })),
+  };
+}
+
+/* ─── Supabase subtask CRUD ─── */
+let nextSubtaskId = 5000;
+
+/* helper — detect Supabase error objects */
+function sbErr(res, body) {
+  if (!res.ok || (body && (body.code || body.error || body.message))) {
+    const msg = body?.message || body?.error || `HTTP ${res.status}`;
+    console.error('Supabase error:', msg, body);
+    toast(`Database error: ${msg}`, 'error', 5000);
+    return true;
+  }
+  return false;
+}
+
+async function sbCreateSubtask(taskId, title) {
+  try {
+    const order = tasks.find(x => x.id === taskId)?.subtasks?.length || 0;
+    const payload = {
+      task_id: taskId,
+      title,
+      done: false,
+      sort_order: order,
+      status: 'todo',
+      notes: '',
+      start_month: 1,
+      end_month: 6,
+    };
+    const res  = await fetch(`${SB_URL}/subtasks`, { method: 'POST', headers: SB_HDR, body: JSON.stringify(payload) });
+    const body = await res.json();
+    if (sbErr(res, Array.isArray(body) ? null : body)) {
+      /* retry with minimal columns in case extended columns not yet added */
+      const res2 = await fetch(`${SB_URL}/subtasks`, {
+        method: 'POST', headers: SB_HDR,
+        body: JSON.stringify({ task_id: taskId, title, done: false, sort_order: order })
+      });
+      const body2 = await res2.json();
+      if (sbErr(res2, Array.isArray(body2) ? null : body2)) return null;
+      toast('Subtask saved (run DB migration for full features)', 'ok', 4000);
+      return Array.isArray(body2) ? body2[0] : body2;
+    }
+    return Array.isArray(body) ? body[0] : body;
+  } catch(e) { console.error('Subtask create failed:', e); toast('Could not save subtask', 'error'); return null; }
+}
+
+async function sbUpdateSubtask(sub) {
+  if (!sub?.id) return;
+  try {
+    const payload = {
+      title:       sub.title,
+      done:        sub.status === 'done',
+      sort_order:  sub.order ?? 0,
+      status:      sub.status      || 'todo',
+      due_date:    sub.dueDate     || null,
+      notes:       sub.notes       || '',
+      start_month: sub.startMonth  || 1,
+      end_month:   sub.endMonth    || 6,
+    };
+    const res  = await fetch(`${SB_URL}/subtasks?id=eq.${sub.id}`, { method: 'PATCH', headers: SB_HDR, body: JSON.stringify(payload) });
+    if (!res.ok) {
+      /* extended columns may not exist — retry with minimal payload */
+      const minimal = { title: sub.title, done: sub.status === 'done', sort_order: sub.order ?? 0 };
+      const res2 = await fetch(`${SB_URL}/subtasks?id=eq.${sub.id}`, { method: 'PATCH', headers: SB_HDR, body: JSON.stringify(minimal) });
+      if (!res2.ok) { const b = await res2.json(); sbErr(res2, b); }
+    }
+  } catch(e) { console.error('Subtask update failed:', e); }
+}
+
+async function sbDeleteSubtask(id) {
+  try {
+    const res = await fetch(`${SB_URL}/subtasks?id=eq.${id}`, { method: 'DELETE', headers: SB_HDR });
+    if (!res.ok) { const b = await res.json(); sbErr(res, b); }
+  } catch(e) { console.error('Subtask delete failed:', e); }
+}
+
+/* map JS task → DB payload */
+function toDB(task) {
+  return {
+    title:       task.t,
+    cat:         task.cat,
+    q:           task.q,
+    status:      task.status,
+    due_date:    task.dueDate || null,
+    notes:       task.notes  || '',
+    start_month: task.startMonth,
+    end_month:   task.endMonth,
+    sort_order:  task.order,
+  };
+}
+
+/* initialise: load all tasks + comments + subtasks from Supabase */
+async function sbInit() {
+  showLoading(true);
+  try {
+    const [r1, r2, r3] = await Promise.all([
+      fetch(`${SB_URL}/tasks?order=sort_order.asc`, { headers: SB_HDR }),
+      fetch(`${SB_URL}/comments?order=created_at.asc`, { headers: SB_HDR }),
+      fetch(`${SB_URL}/subtasks?order=sort_order.asc`, { headers: SB_HDR }),
+    ]);
+    const dbTasks    = await r1.json();
+    const dbComments = await r2.json();
+    const dbSubs     = await r3.json();
+
+    if (!Array.isArray(dbTasks)) throw new Error(JSON.stringify(dbTasks));
+
+    /* warn if subtasks table missing or erroring */
+    if (!Array.isArray(dbSubs)) {
+      console.warn('Subtasks load issue:', dbSubs);
+      toast('Subtasks table not found — run the DB migration', 'error', 7000);
+    }
+
+    /* group comments by task_id or subtask_id */
+    const byTask = {}, bySubtask = {};
+    (Array.isArray(dbComments) ? dbComments : []).forEach(c => {
+      if (c.subtask_id) (bySubtask[c.subtask_id] = bySubtask[c.subtask_id] || []).push(c);
+      else if (c.task_id) (byTask[c.task_id] = byTask[c.task_id] || []).push(c);
+    });
+
+    /* group subtasks by task_id */
+    const subByTask = {};
+    (Array.isArray(dbSubs) ? dbSubs : []).forEach(s => {
+      (subByTask[s.task_id] = subByTask[s.task_id] || []).push(s);
+    });
+
+    if (dbTasks.length > 0) {
+      tasks = dbTasks.map(row => fromDB(row, byTask[row.id] || [], subByTask[row.id] || []));
+      nextId = Math.max(...tasks.map(t => t.id)) + 1;
+      /* attach subtask comments */
+      tasks.forEach(t => t.subtasks.forEach(s => {
+        s.comments = (bySubtask[s.id] || []).map(c => fmtComment(c));
+      }));
+    } else {
+      await sbSeedDefaults();
+    }
+  } catch(e) {
+    console.error('Supabase init failed:', e);
+    toast('Could not reach database — showing local data', 'error', 6000);
+  }
+  showLoading(false);
+  render();
+}
+
+/* seed all default tasks in a single POST */
+async function sbSeedDefaults() {
+  try {
+    const payload = tasks.map(t => toDB(t));
+    const res  = await fetch(`${SB_URL}/tasks`, { method:'POST', headers:SB_HDR, body:JSON.stringify(payload) });
+    const rows = await res.json();
+    if (Array.isArray(rows)) {
+      rows.forEach((row, i) => { if (tasks[i]) tasks[i].id = row.id; });
+      nextId = Math.max(...rows.map(r => r.id)) + 1;
+      toast('Board saved to database ✓');
+    }
+  } catch(e) { console.error('Seed failed:', e); }
+}
+
+/* PATCH one task */
+async function sbUpdate(task) {
+  try {
+    await fetch(`${SB_URL}/tasks?id=eq.${task.id}`, {
+      method: 'PATCH', headers: SB_HDR, body: JSON.stringify(toDB(task))
+    });
+  } catch(e) { console.error('Update failed:', e); }
+}
+
+/* POST one new task, write back real id */
+async function sbCreate(task) {
+  try {
+    const res  = await fetch(`${SB_URL}/tasks`, { method:'POST', headers:SB_HDR, body:JSON.stringify(toDB(task)) });
+    const rows = await res.json();
+    const row  = Array.isArray(rows) ? rows[0] : rows;
+    if (row && row.id) { task.id = row.id; nextId = Math.max(nextId, row.id + 1); }
+  } catch(e) { console.error('Create failed:', e); }
+}
+
+/* DELETE one task */
+async function sbDelete(id) {
+  try {
+    await fetch(`${SB_URL}/tasks?id=eq.${id}`, { method:'DELETE', headers:SB_HDR });
+  } catch(e) { console.error('Delete failed:', e); }
+}
+
+/* POST a comment, return the inserted row */
+async function sbAddComment(taskId, text) {
+  try {
+    const res  = await fetch(`${SB_URL}/comments`, { method:'POST', headers:SB_HDR, body:JSON.stringify({task_id:taskId,text}) });
+    const rows = await res.json();
+    return Array.isArray(rows) ? rows[0] : rows;
+  } catch(e) { console.error('Comment create failed:', e); return null; }
+}
+
+/* DELETE a comment */
+async function sbDeleteComment(id) {
+  try {
+    await fetch(`${SB_URL}/comments?id=eq.${id}`, { method:'DELETE', headers:SB_HDR });
+  } catch(e) { console.error('Comment delete failed:', e); }
+}
+
+/* Subtask comments — stored in same table with subtask_id column */
+async function sbAddSubtaskComment(subtaskId, text) {
+  try {
+    const res  = await fetch(`${SB_URL}/comments`, {
+      method: 'POST', headers: SB_HDR,
+      body: JSON.stringify({ subtask_id: subtaskId, text })
+    });
+    const rows = await res.json();
+    return Array.isArray(rows) ? rows[0] : rows;
+  } catch(e) { console.error('Subtask comment create failed:', e); return null; }
+}
+
+async function sbDeleteSubtaskComment(id) {
+  try {
+    await fetch(`${SB_URL}/comments?id=eq.${id}`, { method:'DELETE', headers:SB_HDR });
+  } catch(e) { console.error('Subtask comment delete failed:', e); }
+}
+
+/* ─── Expenses & Quotations ─── */
+const EXP_STATUSES = [
+  {key:'assumption', label:'Assumption'},
+  {key:'quote',      label:'Quote'},
+  {key:'approved',   label:'Approved'},
+  {key:'ordered',    label:'Ordered'},
+  {key:'paid',       label:'Paid'},
+];
+const EXP_LOCAL_KEY = 'sort_expenses_fallback';
+let expenses = [];
+let nextExpenseId = 1;
+let expensesUseLocal = false;
+
+function escAttr(s) { return String(s ?? '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+function fmtCurrency(n) { return 'CA$' + (Number(n)||0).toLocaleString('en-CA',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+/* format a raw numeric value for display in a money input ($1,234.56), empty if blank */
+function fmtMoneyInput(n) {
+  if (n === '' || n == null || isNaN(Number(n))) return '';
+  return '$' + Number(n).toLocaleString('en-CA',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+/* strip $ and commas so the raw number is editable on focus */
+function unfmtMoneyInput(v) { return String(v ?? '').replace(/[^0-9.\-]/g,''); }
+
+function loadExpensesLocal() {
+  try { expenses = JSON.parse(localStorage.getItem(EXP_LOCAL_KEY) || '[]'); } catch(e) { expenses = []; }
+  nextExpenseId = expenses.length ? Math.max(...expenses.map(e=>e.id)) + 1 : 1;
+}
+function saveExpensesLocal() { localStorage.setItem(EXP_LOCAL_KEY, JSON.stringify(expenses)); }
+
+/* map DB row → JS expense */
+function fromExpenseDB(row) {
+  return {
+    id: row.id, item: row.item || '', vendor: row.vendor || '', cat: row.cat || Object.keys(CATS)[0],
+    status: row.status || 'quote', quoted: row.quoted_amount, actual: row.actual_amount,
+    date: row.exp_date || '', notes: row.notes || '', order: row.sort_order || 0,
+    checked: !!row.checked,
+  };
+}
+/* map JS expense → DB payload */
+function toExpenseDB(e) {
+  return {
+    item: e.item || '', vendor: e.vendor || '', cat: e.cat, status: e.status,
+    quoted_amount: (e.quoted === '' || e.quoted == null) ? null : Number(e.quoted),
+    actual_amount: (e.actual === '' || e.actual == null) ? null : Number(e.actual),
+    exp_date: e.date || null, notes: e.notes || '', sort_order: e.order || 0,
+    checked: !!e.checked,
+  };
+}
+
+/* initialise: load expenses from Supabase, falling back to localStorage if the
+   `expenses` table doesn't exist yet (no schema migration required to use this page) */
+async function sbInitExpenses() {
+  try {
+    const res  = await fetch(`${SB_URL}/expenses?order=sort_order.asc`, { headers: SB_HDR });
+    const body = await res.json();
+    if (!Array.isArray(body)) throw new Error(JSON.stringify(body));
+    expenses = body.map(fromExpenseDB);
+    nextExpenseId = expenses.length ? Math.max(...expenses.map(e=>e.id)) + 1 : 1;
+  } catch(e) {
+    console.warn('Expenses table not found — using local storage:', e);
+    expensesUseLocal = true;
+    loadExpensesLocal();
+  }
+  if (currentTab === 'expenses') renderExpenses();
+}
+
+async function sbCreateExpense(exp) {
+  if (expensesUseLocal) { saveExpensesLocal(); return; }
+  try {
+    const res  = await fetch(`${SB_URL}/expenses`, { method:'POST', headers:SB_HDR, body: JSON.stringify(toExpenseDB(exp)) });
+    const rows = await res.json();
+    const row  = Array.isArray(rows) ? rows[0] : rows;
+    if (!row || !row.id) throw new Error(JSON.stringify(rows));
+    exp.id = row.id; nextExpenseId = Math.max(nextExpenseId, row.id + 1);
+  } catch(e) {
+    console.error('Expense create failed — switching to local storage:', e);
+    expensesUseLocal = true; saveExpensesLocal();
+  }
+}
+
+async function sbUpdateExpense(exp) {
+  try {
+    await fetch(`${SB_URL}/expenses?id=eq.${exp.id}`, { method:'PATCH', headers:SB_HDR, body: JSON.stringify(toExpenseDB(exp)) });
+  } catch(e) { console.error('Expense update failed:', e); }
+}
+async function sbDeleteExpense(id) {
+  if (expensesUseLocal) { saveExpensesLocal(); return; }
+  try { await fetch(`${SB_URL}/expenses?id=eq.${id}`, { method:'DELETE', headers:SB_HDR }); }
+  catch(e) { console.error('Expense delete failed:', e); }
+}
+
+/* debounced PATCH/local-save for expense field edits */
+const _det = {};
+function dbUpdateExpense(exp, delay=600) {
+  clearTimeout(_det[exp.id]);
+  _det[exp.id] = setTimeout(() => expensesUseLocal ? saveExpensesLocal() : sbUpdateExpense(exp), delay);
+}
+
+function addExpenseRow() {
+  const exp = { id: nextExpenseId++, item:'', vendor:'', cat: Object.keys(CATS)[0], status:'quote', quoted:'', actual:'', date:'', notes:'', order: expenses.length, checked: false };
+  expenses.push(exp);
+  renderExpenses();
+  sbCreateExpense(exp);
+  setTimeout(() => { const row = document.querySelector(`tr[data-id="${exp.id}"] td:nth-child(3) input`); if (row) row.focus(); }, 30);
+}
+
+function updateExpense(id, field, value) {
+  const exp = expenses.find(e => e.id === id); if (!exp) return;
+  exp[field] = value;
+  if (field === 'status' || field === 'cat') renderExpenses();
+  else updateExpenseSummary();
+  dbUpdateExpense(exp);
+}
+
+/* ─── Expense row drag & drop reorder ─── */
+let dragExpenseId = null, dragExpenseOverId = null, dragExpenseOverPos = null;
+
+function onExpDragStart(e, id) {
+  dragExpenseId = id;
+  e.dataTransfer.effectAllowed = 'move';
+  setTimeout(() => { const el = document.querySelector(`#exp-tbody tr[data-id="${id}"]`); if (el) el.classList.add('exp-row-dragging'); }, 0);
+}
+function onExpDragEnd() {
+  dragExpenseId = null; dragExpenseOverId = null; dragExpenseOverPos = null;
+  document.querySelectorAll('#exp-tbody tr').forEach(r => r.classList.remove('exp-row-dragging','exp-row-over-above','exp-row-over-below'));
+}
+function onExpDragOver(e, id) {
+  e.preventDefault();
+  if (!dragExpenseId || dragExpenseId === id) return;
+  const rect = e.currentTarget.getBoundingClientRect();
+  const pos = e.clientY < rect.top + rect.height / 2 ? 'above' : 'below';
+  if (dragExpenseOverId !== id || dragExpenseOverPos !== pos) {
+    dragExpenseOverId = id; dragExpenseOverPos = pos;
+    document.querySelectorAll('#exp-tbody tr').forEach(r => r.classList.remove('exp-row-over-above','exp-row-over-below'));
+    e.currentTarget.classList.add(pos === 'above' ? 'exp-row-over-above' : 'exp-row-over-below');
+  }
+}
+function onExpDrop(e, id) {
+  e.preventDefault();
+  if (!dragExpenseId || dragExpenseId === id) return;
+  const drag = expenses.find(x => x.id === dragExpenseId); if (!drag) return;
+  const fromIdx = expenses.findIndex(x => x.id === dragExpenseId);
+  expenses.splice(fromIdx, 1);
+  let toIdx = expenses.findIndex(x => x.id === id);
+  if (dragExpenseOverPos === 'below') toIdx++;
+  expenses.splice(toIdx, 0, drag);
+  dragExpenseId = null; dragExpenseOverId = null; dragExpenseOverPos = null;
+  syncExpenseOrders(); renderExpenses();
+}
+async function syncExpenseOrders() {
+  expenses.forEach((e, i) => { e.order = i; });
+  if (expensesUseLocal) { saveExpensesLocal(); return; }
+  await Promise.all(expenses.map(e => sbUpdateExpense(e)));
+}
+
+function deleteExpense(id) {
+  expenses = expenses.filter(e => e.id !== id);
+  renderExpenses();
+  sbDeleteExpense(id);
+}
+
+function updateExpenseSummary() {
+  const el = document.getElementById('exp-summary'); if (el) el.innerHTML = expenseSummaryHTML();
+}
+function expenseSummaryHTML() {
+  const totalActual   = expenses.reduce((s,e) => s + (Number(e.actual)||0), 0);
+  const totalPaid     = expenses.filter(e => e.status==='paid').reduce((s,e) => s + (Number(e.actual)||Number(e.quoted)||0), 0);
+  const estimatedCost = expenses.filter(e => e.checked).reduce((s,e) => s + (Number(e.actual)||Number(e.quoted)||0), 0);
+  return `
+    <div class="exp-card exp-card-wide"><div class="exp-card-label">Estimated Total Cost</div><div class="exp-card-value">${fmtCurrency(estimatedCost)}</div></div>
+    <div class="exp-card"><div class="exp-card-label">Actual total</div><div class="exp-card-value">${fmtCurrency(totalActual)}</div></div>
+    <div class="exp-card"><div class="exp-card-label">Paid</div><div class="exp-card-value">${fmtCurrency(totalPaid)}</div></div>
+  `;
+}
+
+function renderExpenses() {
+  const summary = document.getElementById('exp-summary');
+  const tbody   = document.getElementById('exp-tbody');
+  if (!summary || !tbody) return;
+  summary.innerHTML = expenseSummaryHTML();
+  if (!expenses.length) {
+    tbody.innerHTML = `<tr class="exp-empty"><td colspan="11">No quotations or expenses yet — add your first line item below.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = expenses.map(e => `
+    <tr data-id="${e.id}" ondragover="onExpDragOver(event,${e.id})" ondrop="onExpDrop(event,${e.id})">
+      <td class="exp-drag-cell"><span class="exp-drag-handle" draggable="true" ondragstart="onExpDragStart(event,${e.id})" ondragend="onExpDragEnd(event)" title="Drag to reorder"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg></span></td>
+      <td class="exp-check-cell"><input class="exp-check" type="checkbox" title="Include in Estimated Total Cost" ${e.checked?'checked':''} onchange="updateExpense(${e.id},'checked',this.checked)"></td>
+      <td><input class="exp-cell" value="${escAttr(e.item)}" placeholder="Item / description" oninput="updateExpense(${e.id},'item',this.value)"></td>
+      <td><input class="exp-cell" value="${escAttr(e.vendor)}" placeholder="Vendor" oninput="updateExpense(${e.id},'vendor',this.value)"></td>
+      <td><select class="exp-cell" onchange="updateExpense(${e.id},'cat',this.value)">${Object.entries(CATS).map(([k,v]) => `<option value="${k}" ${e.cat===k?'selected':''}>${v.label}</option>`).join('')}</select></td>
+      <td><select class="exp-status-select exp-status-${e.status}" onchange="updateExpense(${e.id},'status',this.value)">${EXP_STATUSES.map(s => `<option value="${s.key}" ${e.status===s.key?'selected':''}>${s.label}</option>`).join('')}</select></td>
+      <td><input class="exp-cell exp-num" type="text" inputmode="decimal" value="${fmtMoneyInput(e.quoted)}" placeholder="$0.00" onfocus="this.value=unfmtMoneyInput(this.value)" oninput="updateExpense(${e.id},'quoted',this.value.replace(/[^0-9.\-]/g,''))" onblur="this.value=fmtMoneyInput(expenses.find(x=>x.id===${e.id})?.quoted)"></td>
+      <td><input class="exp-cell exp-num" type="text" inputmode="decimal" value="${fmtMoneyInput(e.actual)}" placeholder="$0.00" onfocus="this.value=unfmtMoneyInput(this.value)" oninput="updateExpense(${e.id},'actual',this.value.replace(/[^0-9.\-]/g,''))" onblur="this.value=fmtMoneyInput(expenses.find(x=>x.id===${e.id})?.actual)"></td>
+      <td><input class="exp-cell" type="date" value="${e.date || ''}" onchange="updateExpense(${e.id},'date',this.value)"></td>
+      <td><input class="exp-cell" value="${escAttr(e.notes)}" placeholder="Notes" oninput="updateExpense(${e.id},'notes',this.value)"></td>
+      <td><button class="btn-icon exp-del-btn" onclick="deleteExpense(${e.id})" title="Delete line item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg></button></td>
+    </tr>
+  `).join('');
+}
+
+/* ─── File attachment helpers ─── */
+let pendingFiles = []; // [{name,data,type,size}] — shared across task/subtask comment input
+
+function fileToBase64(file) {
+  return new Promise((res, rej) => { const r = new FileReader(); r.onload = e => res(e.target.result); r.onerror = rej; r.readAsDataURL(file); });
+}
+function fmtBytes(b) { return b < 1048576 ? (b/1024).toFixed(1)+'KB' : (b/1048576).toFixed(1)+'MB'; }
+
+async function addFilesToPending(files, previewId) {
+  for (const f of files) {
+    if (f.size > 5 * 1024 * 1024) { toast(`${f.name} exceeds 5 MB limit`, 'error', 4000); continue; }
+    pendingFiles.push({ name: f.name, data: await fileToBase64(f), type: f.type, size: f.size });
+  }
+  renderPendingPreviews(previewId);
+  // ensure actions bar is visible
+  const act = document.getElementById('d-comment-actions') || document.getElementById('sub-comment-actions');
+  if (act) act.classList.add('visible');
+}
+
+function renderPendingPreviews(previewId) {
+  const el = document.getElementById(previewId); if (!el) return;
+  el.innerHTML = pendingFiles.map((f, i) =>
+    f.type.startsWith('image/')
+      ? `<div class="attach-preview-img" title="${f.name}"><img src="${f.data}" alt="${f.name}"><button class="attach-remove" onclick="removePendingFile(${i},'${previewId}')">×</button></div>`
+      : `<div class="attach-preview-chip"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span class="attach-preview-name">${f.name}</span><span style="color:hsl(var(--muted-foreground));white-space:nowrap">${fmtBytes(f.size)}</span><button class="attach-remove" onclick="removePendingFile(${i},'${previewId}')">×</button></div>`
+  ).join('');
+}
+
+function removePendingFile(idx, previewId) { pendingFiles.splice(idx, 1); renderPendingPreviews(previewId); }
+
+async function handleFileInputChange(files, previewId) {
+  await addFilesToPending(Array.from(files), previewId);
+  const inp = document.getElementById('d-file-input') || document.getElementById('sub-file-input');
+  if (inp) inp.value = '';
+}
+
+function setupCommentDrop(wrapId, previewId) {
+  const wrap = document.getElementById(wrapId); if (!wrap) return;
+  wrap.addEventListener('dragover', e => { e.preventDefault(); wrap.classList.add('drag-over'); });
+  wrap.addEventListener('dragleave', e => { if (!wrap.contains(e.relatedTarget)) wrap.classList.remove('drag-over'); });
+  wrap.addEventListener('drop', async e => {
+    e.preventDefault(); wrap.classList.remove('drag-over');
+    const files = Array.from(e.dataTransfer.files); if (!files.length) return;
+    await addFilesToPending(files, previewId);
+  });
+}
+
+function openDataUrl(dataUrl, mimeType) {
+  try {
+    const byteStr = atob(dataUrl.split(',')[1]);
+    const ab = new Uint8Array(byteStr.length);
+    for (let i = 0; i < byteStr.length; i++) ab[i] = byteStr.charCodeAt(i);
+    const blob = new Blob([ab], { type: mimeType || 'application/octet-stream' });
+    const url = URL.createObjectURL(blob);
+    const w = window.open(url, '_blank');
+    if (w) setTimeout(() => URL.revokeObjectURL(url), 10000);
+  } catch(e) { window.open(dataUrl, '_blank'); }
+}
+
+function renderCommentAttachments(attachments) {
+  if (!attachments || !attachments.length) return '';
+  return `<div class="comment-attachments">${attachments.map((a, i) =>
+    a.type && a.type.startsWith('image/')
+      ? `<img src="${a.data}" class="comment-attach-img" alt="${a.name}" title="Click to open · ${a.name}" data-dtype="${a.type}" onclick="openDataUrl(this.src,this.dataset.dtype)">`
+      : `<a class="comment-attach-file" href="${a.data}" download="${a.name}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>${a.name}</a>`
+  ).join('')}</div>`;
+}
+
+/* debounced PATCH for text fields (title, notes) */
+const _dbt = {};
+function dbUpdate(task, delay=700) {
+  clearTimeout(_dbt[task.id]);
+  _dbt[task.id] = setTimeout(() => sbUpdate(task), delay);
+}
+
+/* update sort_order for every task after a drag */
+async function syncOrders() {
+  tasks.forEach((t, i) => { t.order = i; });
+  await Promise.all(tasks.map(t => sbUpdate(t)));
+}
+
+/* ─── State ─── */
+let filterQ = 'all', filterStatus = 'all', currentTab = 'board', drawerTaskId = null, drawerSubtaskId = null, dragId = null;
+
+/* ─── Helpers ─── */
+const cc = hsl => `hsl(${hsl})`;
+const catColor = key => cc(CATS[key].hsl);
+const catColorA = (key,a) => `hsl(${CATS[key].hsl} / ${a})`;
+const byId = id => tasks.find(x => x.id === id);
+const filtered = () => tasks.filter(t =>
+  (filterQ === 'all' || t.q === filterQ) &&
+  (filterStatus === 'all' || t.status === filterStatus)
+);
+const monthToQ = slot => {
+  for (const [k, q] of Object.entries(QS)) { if (slot >= q.sm && slot <= q.em) return parseInt(k); }
+  return 6;
+};
+
+const CHK = `<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><polyline points="1,3.5 3.5,5.5 8,1" stroke="hsl(0 0% 98%)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const GRIP = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="4" cy="3" r="1" fill="currentColor"/><circle cx="8" cy="3" r="1" fill="currentColor"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="8" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="9" r="1" fill="currentColor"/><circle cx="8" cy="9" r="1" fill="currentColor"/></svg>`;
+
+function statusLabel(s){ return s==='in-progress'?'In progress':s==='done'?'Done':'To do'; }
+function statusBadgeClass(s){ return s==='in-progress'?'badge-inprogress':s==='done'?'badge-done':'badge-todo'; }
+
+function dueDateBadge(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr + 'T00:00:00');
+  const td = new Date(TODAY + 'T00:00:00');
+  const diff = Math.floor((d - td) / 86400000);
+  const m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const lbl = `${m[d.getMonth()]} ${d.getDate()}`;
+  const cls = diff < 0 ? 'badge-overdue' : diff <= 7 ? 'badge-warning' : 'badge badge-secondary';
+  const icon = `<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>`;
+  return `<span class="badge ${cls} card-due">${icon}${lbl}</span>`;
+}
+
+function updateStats() {
+  const list = filtered(), done = list.filter(t => t.status === 'done').length, total = list.length;
+  const pct = total ? Math.round(done / total * 100) : 0;
+  document.getElementById('nav-stat').innerHTML = `<strong>${done}</strong> / ${total} &nbsp;·&nbsp; ${pct}%`;
+  document.getElementById('prog-bar').style.width = pct + '%';
+}
+
+/* ─── Toggle / Delete ─── */
+function toggleStatus(id) {
+  const t = byId(id); if (!t) return;
+  t.status = t.status === 'done' ? 'todo' : 'done';
+  sbUpdate(t); render(); renderDrawer();
+}
+function deleteTask(id) {
+  if (drawerTaskId === id) closeDrawer();
+  sbDelete(id);
+  tasks = tasks.filter(x => x.id !== id);
+  render();
+}
+
+/* ─── Drag & drop ─── */
+let dragOverId = null, dragOverPos = null;
+
+function onDragStart(e, id) {
+  dragId = id;
+  e.dataTransfer.effectAllowed = 'move';
+  setTimeout(() => { const el = document.querySelector(`[data-id="${id}"]`); if (el) el.classList.add('dragging'); }, 0);
+}
+function onDragEnd(e, id) {
+  dragId = null; dragOverId = null; dragOverPos = null;
+  document.querySelectorAll('.task-card').forEach(c => { c.classList.remove('dragging','drag-over-above','drag-over-below'); });
+  document.querySelectorAll('.col-body').forEach(c => c.classList.remove('drag-target'));
+}
+function onDragOverCard(e, id) {
+  e.preventDefault(); e.stopPropagation();
+  if (dragId === id) return;
+  const rect = e.currentTarget.getBoundingClientRect();
+  const pos = e.clientY < rect.top + rect.height / 2 ? 'above' : 'below';
+  if (dragOverId !== id || dragOverPos !== pos) {
+    dragOverId = id; dragOverPos = pos;
+    document.querySelectorAll('.task-card').forEach(c => c.classList.remove('drag-over-above','drag-over-below'));
+    document.querySelectorAll('.col-body').forEach(c => c.classList.remove('drag-target'));
+    e.currentTarget.classList.add(pos === 'above' ? 'drag-over-above' : 'drag-over-below');
+  }
+}
+function onDropCard(e, id, cat) {
+  e.preventDefault(); e.stopPropagation();
+  if (!dragId || dragId === id) return;
+  const drag = byId(dragId);
+  if (!drag) return;
+  drag.cat = cat;
+  drag.q = byId(id) ? byId(id).q : drag.q;
+  const fromIdx = tasks.findIndex(x => x.id === dragId);
+  tasks.splice(fromIdx, 1);
+  let toIdx = tasks.findIndex(x => x.id === id);
+  if (dragOverPos === 'below') toIdx++;
+  tasks.splice(toIdx, 0, drag);
+  dragId = null; dragOverId = null; dragOverPos = null;
+  syncOrders(); render();
+}
+function onDragOverCol(e, cat) {
+  e.preventDefault();
+  document.querySelectorAll('.col-body').forEach(c => c.classList.remove('drag-target'));
+  const colEl = document.getElementById('col-' + cat);
+  if (colEl) colEl.classList.add('drag-target');
+}
+function onDropCol(e, cat) {
+  e.preventDefault();
+  if (!dragId) return;
+  const drag = byId(dragId);
+  if (!drag) return;
+  drag.cat = cat;
+  syncOrders(); render();
+  dragId = null;
+}
+
+/* ─── Render board ─── */
+function renderBoard() {
+  const el = document.getElementById('board'); el.innerHTML = '';
+  const list = filtered();
+  Object.entries(CATS).forEach(([key, cat]) => {
+    const ct = list.filter(t => t.cat === key);
+    const done = ct.filter(t => t.status === 'done').length;
+    const isCustom = !DEFAULT_CAT_KEYS.has(key);
+    const col = document.createElement('div'); col.className = 'board-col';
+    col.innerHTML = `
+      <div class="col-hdr">
+        <div class="col-hdr-top">
+          <div class="col-indicator" style="background:${catColor(key)}"></div>
+          <span class="col-hdr-title">${cat.label}</span>
+          <span class="col-hdr-count">${done}/${ct.length}</span>
+          ${isCustom ? `<div class="col-hdr-menu" style="margin-left:auto">
+            <button class="col-menu-btn" onclick="toggleColMenu(event,'menu-${key}')" title="Options">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="19" r="1.5" fill="currentColor"/></svg>
+            </button>
+            <div class="col-dropdown" id="menu-${key}">
+              <button class="col-dropdown-item danger" onclick="deleteCat('${key}')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2"/></svg>
+                Delete board
+              </button>
+            </div>
+          </div>` : ''}
+        </div>
+      </div>
+      <div class="col-body" id="col-${key}"></div>`;
+    el.appendChild(col);
+
+    const body = col.querySelector('.col-body');
+    body.addEventListener('dragover', e => onDragOverCol(e, key));
+    body.addEventListener('drop', e => onDropCol(e, key));
+
+    if (!ct.length) { body.innerHTML = '<div class="col-empty">No tasks</div>'; }
+
+    // flat list sorted by startMonth — no quarter grouping
+    const sorted = [...ct].sort((a,b) => a.startMonth - b.startMonth || a.order - b.order);
+    sorted.forEach(task => {
+        const card = document.createElement('div');
+        card.className = `task-card status-${task.status}`;
+        card.setAttribute('data-id', task.id);
+        card.setAttribute('draggable', 'true');
+        card.innerHTML = `
+          <div class="card-main">
+            <div class="drag-handle">${GRIP}</div>
+            <div class="card-cb">${task.status==='done'?CHK:''}</div>
+            <span class="card-title">${task.t}</span>
+          </div>
+          <div class="card-meta">
+            ${dueDateBadge(task.dueDate)}
+            ${task.notes || task.comments.length ? `<span class="badge badge-secondary" style="gap:0.25rem"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>${task.comments.length||''}</span>` : ''}
+          </div>
+          ${task.subtasks && task.subtasks.length ? `<div class="child-chips">
+            ${task.subtasks.map(s => `
+              <div class="child-chip status-${s.status}" data-sid="${s.id}">
+                <div class="child-chip-cb">${s.status==='done'?CHK:''}</div>
+                <span class="child-chip-title">${s.title}</span>
+                ${s.dueDate ? `<span class="child-chip-due">${dueDateBadge(s.dueDate)}</span>` : ''}
+              </div>`).join('')}
+          </div>` : ''}`;
+        card.querySelector('.card-cb').addEventListener('click', e => { e.stopPropagation(); toggleStatus(task.id); });
+        card.addEventListener('click', () => openDrawer(task.id));
+        card.addEventListener('dragstart', e => onDragStart(e, task.id));
+        card.addEventListener('dragend',   e => onDragEnd(e, task.id));
+        card.addEventListener('dragover',  e => onDragOverCard(e, task.id));
+        card.addEventListener('drop',      e => onDropCard(e, task.id, key));
+        // Child chip interactions
+        card.querySelectorAll('.child-chip').forEach(chip => {
+          const sid = parseInt(chip.dataset.sid);
+          chip.addEventListener('click', e => { e.stopPropagation(); openDrawer(task.id); setTimeout(()=>openSubDrawer(sid), 50); });
+          const ccb = chip.querySelector('.child-chip-cb');
+          if (ccb) ccb.addEventListener('click', e => {
+            e.stopPropagation();
+            const sub = task.subtasks.find(s => s.id === sid); if (!sub) return;
+            sub.status = sub.status === 'done' ? 'todo' : 'done';
+            sbUpdateSubtask(sub); render();
+          });
+        });
+        body.appendChild(card);
+      });
+
+    // ── Inline add-task row ──
+    const addRow = document.createElement('div');
+    addRow.className = 'col-add-row';
+    addRow.innerHTML = `
+      <button class="col-add-btn">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+        Add a task
+      </button>
+      <div class="col-add-input-wrap">
+        <textarea class="col-add-input" placeholder="Task name…" rows="2"></textarea>
+        <div style="display:flex;gap:0.375rem;align-items:center">
+          <button class="btn btn-default btn-sm">Add</button>
+          <button class="btn btn-ghost btn-sm" style="color:hsl(var(--muted-foreground))">Cancel</button>
+        </div>
+      </div>`;
+
+    const addBtn      = addRow.querySelector('.col-add-btn');
+    const inputWrap   = addRow.querySelector('.col-add-input-wrap');
+    const addInput    = addRow.querySelector('.col-add-input');
+    const confirmBtn  = addRow.querySelectorAll('button')[1];
+    const cancelBtn   = addRow.querySelectorAll('button')[2];
+
+    function openInlineAdd() {
+      addBtn.style.display = 'none';
+      inputWrap.classList.add('open');
+      addInput.focus();
+    }
+    function closeInlineAdd() {
+      addInput.value = '';
+      inputWrap.classList.remove('open');
+      addBtn.style.display = '';
+    }
+    async function commitInlineAdd() {
+      const title = addInput.value.trim(); if (!title) { addInput.focus(); return; }
+      const q = filterQ !== 'all' ? filterQ : 1;
+      const task = { id: nextId++, t: title, cat: key, q, status:'todo', dueDate:'', notes:'', comments:[], subtasks:[], startMonth:QS[q].sm, endMonth:QS[q].em, open:false, order:tasks.length };
+      tasks.push(task);
+      closeInlineAdd();
+      render();
+      await sbCreate(task);
+    }
+
+    addBtn.addEventListener('click', openInlineAdd);
+    confirmBtn.addEventListener('click', commitInlineAdd);
+    cancelBtn.addEventListener('click', closeInlineAdd);
+    addInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); commitInlineAdd(); }
+      if (e.key === 'Escape') closeInlineAdd();
+    });
+    // auto-resize textarea
+    addInput.addEventListener('input', () => { addInput.style.height='auto'; addInput.style.height=addInput.scrollHeight+'px'; });
+
+    body.appendChild(addRow);
+  });
+  // ── "New category" add column ──
+  const addColWrap = document.createElement('div');
+  addColWrap.className = 'board-col-add';
+  addColWrap.innerHTML = `
+    <button class="board-add-col-btn" onclick="openNewCatDialog()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+      New category
+    </button>`;
+  el.appendChild(addColWrap);
+
+  updateStats();
+}
+
+function toggleColMenu(e, menuId) {
+  e.stopPropagation();
+  const menu = document.getElementById(menuId);
+  if (!menu) return;
+  const isOpen = menu.classList.contains('open');
+  document.querySelectorAll('.col-dropdown.open').forEach(d => d.classList.remove('open'));
+  if (!isOpen) menu.classList.add('open');
+}
+
+/* ─── Render timeline ─── */
+function renderTimeline() {
+  const el = document.getElementById('tlt'); el.innerHTML = '';
+  const list = filtered();
+
+  // Header — 2 levels: month names + 1st / 16th sub-labels
+  const hdr = document.createElement('div'); hdr.className = 'tl-hdr';
+  hdr.innerHTML = '<div class="tl-corner">Task</div>';
+  const mhdr = document.createElement('div'); mhdr.className = 'tl-months-hdr';
+
+  MONTHS_META.forEach((m, mi) => {
+    // First half: 1st–15th
+    const c1 = document.createElement('div'); c1.className = 'tl-m';
+    // show quarter tag at first month of each quarter
+    const slotIdx = mi * 2; // 0-indexed slot
+    const qNum = Object.keys(QS).find(k => QS[k].sm === slotIdx + 1);
+    if (qNum) {
+      const cKey = Object.keys(CATS)[parseInt(qNum)-1] || Object.keys(CATS)[0];
+      c1.innerHTML = `<span class="tl-q-tag" style="color:${catColor(cKey)}">${QS[qNum].label}</span><span class="tl-q-sub">${QS[qNum].sub}</span><span class="tl-m-name">${m.name} <span class="tl-m-yr">${m.yr}</span></span><span class="tl-half-lbl">1</span>`;
+    } else {
+      c1.innerHTML = `<span style="display:block;height:2rem"></span><span class="tl-m-name">${m.name} <span class="tl-m-yr">${m.yr}</span></span><span class="tl-half-lbl">1</span>`;
+    }
+    mhdr.appendChild(c1);
+
+    // Second half: 16th–end
+    const c2 = document.createElement('div'); c2.className = 'tl-m tl-m-second';
+    c2.innerHTML = `<span style="display:block;height:2rem"></span><span class="tl-m-name tl-m-name-faded"></span><span class="tl-half-lbl">16</span>`;
+    mhdr.appendChild(c2);
+  });
+
+  hdr.appendChild(mhdr);
+  el.appendChild(hdr);
+
+  Object.entries(CATS).forEach(([key, cat]) => {
+    const ct = list.filter(t => t.cat === key); if (!ct.length) return;
+    const done = ct.filter(t => t.status === 'done').length;
+
+    // Category header
+    const ch = document.createElement('div'); ch.className = 'tl-cat-hdr';
+    const cc2 = document.createElement('div'); cc2.className = 'tl-cat-cell';
+    cc2.innerHTML = `<div class="tl-cat-dot" style="background:${catColor(key)}"></div><span class="tl-cat-name">${cat.label}</span><span class="tl-cat-count">${done}/${ct.length}</span>`;
+    ch.appendChild(cc2);
+    const chRight = document.createElement('div'); ch.appendChild(chRight);
+    el.appendChild(ch);
+
+    ct.forEach(task => {
+      const hasSubs = task.subtasks && task.subtasks.length > 0;
+
+      const row = document.createElement('div');
+      row.className = `tl-task-row status-${task.status}`;
+
+      // Name cell — click opens drawer
+      const nc = document.createElement('div'); nc.className = 'tl-name-cell';
+      nc.innerHTML = `
+        <div class="tl-cb">${task.status==='done'?CHK:''}</div>
+        <span class="tl-task-name">${task.t}</span>
+        ${task.notes||task.comments.length?`<div class="tl-note-dot" style="background:${catColor(key)}"></div>`:''}
+        ${hasSubs ? `<button class="tl-chevron" title="${task.tlOpen?'Collapse':'Expand'} subtasks">${task.tlOpen?'▲':'▼'}</button>` : '<span style="width:1.25rem;flex-shrink:0"></span>'}`;
+      nc.querySelector('.tl-cb').addEventListener('click', e => { e.stopPropagation(); toggleStatus(task.id); });
+      if (hasSubs) nc.querySelector('.tl-chevron').addEventListener('click', e => { e.stopPropagation(); task.tlOpen = !task.tlOpen; renderTimeline(); });
+      nc.addEventListener('click', e => { if (!e.target.closest('.tl-cb') && !e.target.closest('.tl-chevron')) openDrawer(task.id); });
+      row.appendChild(nc);
+
+      // Parent bar
+      const barsArea = document.createElement('div'); barsArea.className = 'tl-bars-area';
+      barsArea.appendChild(buildDraggableBar(task, key, barsArea, sub => sbUpdate(sub)));
+      row.appendChild(barsArea);
+      el.appendChild(row);
+
+      // Subtask rows (shown when tlOpen)
+      if (hasSubs && task.tlOpen) {
+        task.subtasks.forEach(sub => {
+          const srow = document.createElement('div');
+          srow.className = `tl-subtask-row status-${sub.status}`;
+
+          const snc = document.createElement('div'); snc.className = 'tl-subtask-name-cell';
+          snc.innerHTML = `
+            <div class="tl-subtask-connector"></div>
+            <div class="tl-subtask-cb">${sub.status==='done'?CHK:''}</div>
+            <span class="tl-subtask-name">${sub.title}</span>`;
+          snc.querySelector('.tl-subtask-cb').addEventListener('click', e => {
+            e.stopPropagation();
+            sub.status = sub.status === 'done' ? 'todo' : 'done';
+            sbUpdateSubtask(sub); render(); renderTimeline();
+          });
+          snc.addEventListener('click', e => {
+            if (e.target.closest('.tl-subtask-cb')) return;
+            openDrawer(task.id); setTimeout(() => openSubDrawer(sub.id), 50);
+          });
+          srow.appendChild(snc);
+
+          const sbarsArea = document.createElement('div'); sbarsArea.className = 'tl-bars-area';
+          sbarsArea.style.background = 'hsl(var(--muted) / 0.25)';
+          sbarsArea.appendChild(buildDraggableBar(sub, key, sbarsArea, s => sbUpdateSubtask(s), true));
+          srow.appendChild(sbarsArea);
+          el.appendChild(srow);
+        });
+      }
+    });
+  });
+  updateStats();
+}
+
+/* ─── Draggable bar builder ─── */
+function buildDraggableBar(item, catKey, container, saveFn, isSubtask=false) {
+  const bar = document.createElement('div');
+  bar.className = 'tl-gantt-bar';
+  if (isSubtask) {
+    bar.style.top    = '0.3rem';
+    bar.style.bottom = '0.3rem';
+    bar.style.opacity = '0.75';
+  }
+
+  const isDone = item.status === 'done';
+  bar.style.background = catColorA(catKey, isDone ? 0.35 : (isSubtask ? 0.55 : 0.85));
+  bar.style.border = `1.5px solid ${catColorA(catKey, isDone ? 0.2 : (isSubtask ? 0.4 : 0.7))}`;
+
+  const leftHandle  = document.createElement('div'); leftHandle.className  = 'tl-bar-handle';
+  const lhi = document.createElement('div'); lhi.className = 'tl-bar-handle-inner'; leftHandle.appendChild(lhi);
+  const label = document.createElement('div'); label.className = 'tl-bar-label';
+  label.textContent = item.t || item.title || '';
+  const rightHandle = document.createElement('div'); rightHandle.className = 'tl-bar-handle';
+  const rhi = document.createElement('div'); rhi.className = 'tl-bar-handle-inner'; rightHandle.appendChild(rhi);
+  bar.appendChild(leftHandle); bar.appendChild(label); bar.appendChild(rightHandle);
+
+  function positionBar() {
+    const sm = Math.max(1, Math.min(TOTAL_SLOTS, item.startMonth));
+    const em = Math.max(sm, Math.min(TOTAL_SLOTS, item.endMonth));
+    bar.style.left  = ((sm - 1) / TOTAL_SLOTS * 100) + '%';
+    bar.style.width = ((em - sm + 1) / TOTAL_SLOTS * 100) + '%';
+  }
+  positionBar();
+
+  function slotWidth() {
+    return container.getBoundingClientRect().width / TOTAL_SLOTS;
+  }
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+  function attachDrag(handle, mode) {
+    handle.addEventListener('mousedown', e => {
+      e.preventDefault(); e.stopPropagation();
+      bar.classList.add('dragging');
+      const sw = slotWidth();
+      const startX = e.clientX;
+      const origSm = item.startMonth, origEm = item.endMonth;
+      const origSpan = origEm - origSm;
+
+      function onMove(me) {
+        const delta = Math.round((me.clientX - startX) / sw);
+        if (mode === 'move') {
+          const ns = clamp(origSm + delta, 1, TOTAL_SLOTS - origSpan);
+          item.startMonth = ns; item.endMonth = ns + origSpan;
+        } else if (mode === 'left') {
+          item.startMonth = clamp(origSm + delta, 1, origEm);
+        } else {
+          item.endMonth = clamp(origEm + delta, origSm, TOTAL_SLOTS);
+        }
+        positionBar();
+      }
+      function onUp() {
+        bar.classList.remove('dragging');
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        if (saveFn) saveFn(item); else sbUpdate(item);
+      }
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    });
+  }
+
+  attachDrag(leftHandle, 'left');
+  attachDrag(label,      'move');
+  attachDrag(rightHandle,'right');
+  return bar;
+}
+
+/* ─── Drawer ─── */
+function openDrawer(id) {
+  pendingFiles = [];
+  drawerTaskId = id; drawerSubtaskId = null;
+  document.getElementById('app').classList.add('drawer-open');
+  document.getElementById('drawer-scrim').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+  renderDrawer();
+}
+function closeDrawer() {
+  drawerTaskId = null; drawerSubtaskId = null;
+  document.getElementById('app').classList.remove('drawer-open');
+  document.getElementById('drawer-scrim').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+}
+function openSubDrawer(subtaskId) {
+  drawerSubtaskId = subtaskId;
+  renderDrawer();
+}
+function closeSubDrawer() {
+  drawerSubtaskId = null;
+  renderDrawer();
+}
+
+function findSubtask(sid) {
+  for (const t of tasks) {
+    const s = (t.subtasks||[]).find(x => x.id === sid);
+    if (s) return { task: t, sub: s };
+  }
+  return null;
+}
+
+/* debounced update for subtask text fields */
+const _dbst = {};
+function dbUpdateSub(sub, delay=700) {
+  clearTimeout(_dbst[sub.id]);
+  _dbst[sub.id] = setTimeout(() => sbUpdateSubtask(sub), delay);
+}
+
+function renderDrawer() {
+  if (!drawerTaskId) return;
+  if (drawerSubtaskId) { renderSubDrawer(); return; }
+
+  const task = byId(drawerTaskId); if (!task) return;
+  const cat = CATS[task.cat];
+
+
+  // Subtask cards
+  const subs = task.subtasks || [];
+  const subsDone = subs.filter(s=>s.status==='done').length;
+  const subsPct  = subs.length ? Math.round(subsDone/subs.length*100) : 0;
+  const subtasksHtml = `
+    <div class="subtask-section" id="d-subtask-section">
+      <div class="subtask-header">
+        <span class="subtask-title-label">Subtasks</span>
+        ${subs.length ? `<div class="subtask-progress-wrap">
+          <div class="subtask-progress-bar"><div class="subtask-progress-fill" style="width:${subsPct}%"></div></div>
+          <span class="subtask-progress-label">${subsDone} / ${subs.length}</span>
+        </div>` : ''}
+      </div>
+      <div class="subtask-cards" id="d-subtask-cards">
+        ${subs.map(s => `
+          <div class="subtask-card status-${s.status}" data-sid="${s.id}" style="border-left-color:${s.status==='done'?'hsl(var(--border))':catColor(task.cat)}">
+            <div class="subtask-card-cb" data-sid="${s.id}">${s.status==='done'?CHK:''}</div>
+            <div class="subtask-card-body">
+              <div class="subtask-card-title">${s.title}</div>
+              <div class="subtask-card-meta">
+                <span class="badge ${statusBadgeClass(s.status)}">${statusLabel(s.status)}</span>
+                ${s.dueDate ? dueDateBadge(s.dueDate) : ''}
+              </div>
+            </div>
+            <button class="subtask-card-del" data-sid="${s.id}" title="Delete">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+          </div>`).join('')}
+      </div>
+      <div class="subtask-add-row">
+        <div class="subtask-add-icon"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg></div>
+        <input class="subtask-add-input" id="d-subtask-add" placeholder="Add a subtask…">
+      </div>
+    </div>`;
+
+  const commentsHtml = task.comments.length ? task.comments.map(c => `
+    <div class="comment-item" data-cid="${c.id}">
+      <div class="comment-header">
+        <div class="comment-avatar">Y</div>
+        <span class="comment-author">You</span>
+        <span class="comment-time">${c.time}</span>
+        <button class="comment-del" onclick="deleteComment(${task.id},${c.id})">×</button>
+      </div>
+      ${c.text ? `<div class="comment-text">${c.text.replace(/\n/g,'<br>')}</div>` : ''}
+      ${renderCommentAttachments(c.attachments)}
+    </div>`).join('') : '<p style="font-size:0.8125rem;color:hsl(var(--muted-foreground))">No comments yet.</p>';
+
+  document.getElementById('drawer').innerHTML = `
+    <div class="drawer-topbar">
+      <div class="drawer-cat-indicator" style="background:${catColor(task.cat)}"></div>
+      <span class="drawer-cat-name">${cat.label}</span>
+      <div class="drawer-topbar-right">
+        <button class="btn-icon" onclick="deleteTask(${task.id})" title="Delete task">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2"/></svg>
+        </button>
+        <button class="btn-icon" onclick="closeDrawer()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="drawer-body">
+      <div class="drawer-title-wrap">
+        <textarea class="drawer-title-input" placeholder="Task title…" rows="1" id="drawer-title">${task.t}</textarea>
+      </div>
+
+      <div class="drawer-props">
+        <div class="prop-row">
+          <div class="prop-key"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Status</div>
+          <div class="prop-val">
+            <select class="prop-select" id="d-status">
+              <option value="todo" ${task.status==='todo'?'selected':''}>To do</option>
+              <option value="in-progress" ${task.status==='in-progress'?'selected':''}>In progress</option>
+              <option value="done" ${task.status==='done'?'selected':''}>Done</option>
+            </select>
+          </div>
+        </div>
+        <div class="prop-row">
+          <div class="prop-key"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Due date</div>
+          <div class="prop-val"><input class="prop-date-input" type="date" id="d-due" value="${task.dueDate}" min="2026-05-01" max="2027-12-31"></div>
+        </div>
+        <div class="prop-row">
+          <div class="prop-key"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h16M4 20V8l8-4 8 4v12"/></svg>Category</div>
+          <div class="prop-val">
+            <select class="prop-select" id="d-cat">
+              ${Object.entries(CATS).map(([k,v])=>`<option value="${k}" ${task.cat===k?'selected':''}>${v.label}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+        <div class="prop-row">
+          <div class="prop-key"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg>Quarter</div>
+          <div class="prop-val">
+            <select class="prop-select" id="d-q">
+              ${[1,2,3,4,5,6].map(q=>`<option value="${q}" ${task.q===q?'selected':''}>${QS[q].label} — ${QS[q].sub}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+        <div class="prop-row">
+          <div class="prop-key"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>Timeline</div>
+          <div class="prop-val" style="font-size:0.8125rem;color:hsl(var(--muted-foreground));font-style:italic">Drag the bar on the Timeline view</div>
+        </div>
+      </div>
+
+      <div class="sep"></div>
+
+      <div class="drawer-section">
+        <div class="drawer-section-title">Description</div>
+        <textarea class="notes-ta" id="d-notes" placeholder="Add a description, details, links…">${task.notes||''}</textarea>
+      </div>
+
+      <div class="sep"></div>
+
+      ${subtasksHtml}
+
+      <div class="sep"></div>
+
+      <div class="drawer-section">
+        <div class="drawer-section-title">Activity</div>
+        <div class="comment-list" id="d-comments">${commentsHtml}</div>
+        <div class="comment-input-wrap">
+          <div class="comment-input-avatar">Y</div>
+          <div class="comment-input-inner">
+            <div class="comment-ta-wrap" id="d-ta-wrap">
+              <textarea class="comment-ta" id="d-comment-ta" placeholder="Add a comment or drop files…" rows="1"></textarea>
+            </div>
+            <div class="attach-previews" id="d-attach-previews"></div>
+            <div class="comment-actions" id="d-comment-actions">
+              <label class="btn btn-icon attach-btn" title="Attach file" style="cursor:pointer;margin-right:auto">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+                <input type="file" id="d-file-input" multiple style="display:none" onchange="handleFileInputChange(this.files,'d-attach-previews')">
+              </label>
+              <button class="btn btn-outline btn-sm" onclick="cancelComment()">Cancel</button>
+              <button class="btn btn-default btn-sm" onclick="addComment(${task.id})">Comment</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  // Wire title
+  const titleEl = document.getElementById('drawer-title');
+  const autoResize = el => { el.style.height='auto'; el.style.height=el.scrollHeight+'px'; };
+  autoResize(titleEl);
+  titleEl.addEventListener('input', e => { autoResize(e.target); task.t = e.target.value; dbUpdate(task); render(); });
+
+  document.getElementById('d-notes').addEventListener('input', e => { task.notes = e.target.value; dbUpdate(task); updateStats(); });
+  document.getElementById('d-status').addEventListener('change', e => { task.status = e.target.value; sbUpdate(task); render(); });
+  document.getElementById('d-due').addEventListener('change', e => { task.dueDate = e.target.value; sbUpdate(task); render(); });
+  document.getElementById('d-cat').addEventListener('change', e => {
+    task.cat = e.target.value;
+    document.querySelector('.drawer-cat-indicator').style.background = catColor(task.cat);
+    document.querySelector('.drawer-cat-name').textContent = CATS[task.cat].label;
+    sbUpdate(task); render();
+  });
+  document.getElementById('d-q').addEventListener('change', e => {
+    task.q = parseInt(e.target.value);
+    task.startMonth = QS[task.q].sm;
+    task.endMonth   = QS[task.q].em;
+    sbUpdate(task); render();
+  });
+
+  // Comment focus + drag/drop
+  const cta = document.getElementById('d-comment-ta');
+  cta.addEventListener('focus', () => { document.getElementById('d-comment-actions').classList.add('visible'); });
+  cta.addEventListener('input', () => { const ar = el => { el.style.height='auto'; el.style.height=el.scrollHeight+'px'; }; ar(cta); });
+  setupCommentDrop('d-ta-wrap', 'd-attach-previews');
+  renderPendingPreviews('d-attach-previews');
+  if (pendingFiles.length) document.getElementById('d-comment-actions').classList.add('visible');
+
+  // ── Subtask card interactions ──
+  const cards = document.getElementById('d-subtask-cards');
+  if (cards) {
+    // Click card body → open sub-drawer
+    cards.querySelectorAll('.subtask-card').forEach(card => {
+      const sid = parseInt(card.dataset.sid);
+      card.addEventListener('click', e => {
+        if (e.target.closest('.subtask-card-cb') || e.target.closest('.subtask-card-del')) return;
+        openSubDrawer(sid);
+      });
+    });
+    // Toggle status via checkbox
+    cards.querySelectorAll('.subtask-card-cb').forEach(cb => {
+      cb.addEventListener('click', e => {
+        e.stopPropagation();
+        const sid = parseInt(cb.dataset.sid);
+        const sub = task.subtasks.find(s => s.id === sid); if (!sub) return;
+        sub.status = sub.status === 'done' ? 'todo' : 'done';
+        sbUpdateSubtask(sub); render(); renderDrawer();
+      });
+    });
+    // Delete subtask
+    cards.querySelectorAll('.subtask-card-del').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const sid = parseInt(btn.dataset.sid);
+        task.subtasks = task.subtasks.filter(s => s.id !== sid);
+        sbDeleteSubtask(sid); render(); renderDrawer();
+      });
+    });
+  }
+
+  // Add subtask on Enter
+  const addInp = document.getElementById('d-subtask-add');
+  if (addInp) {
+    addInp.addEventListener('keydown', async e => {
+      if (e.key !== 'Enter') return;
+      const title = addInp.value.trim(); if (!title) return;
+      addInp.value = '';
+      const row = await sbCreateSubtask(task.id, title);
+      task.subtasks.push({
+        id: row?.id || nextSubtaskId++, title,
+        status: 'todo', dueDate: '', notes: '',
+        startMonth: 1, endMonth: 6, order: task.subtasks.length,
+      });
+      render(); renderDrawer();
+      setTimeout(() => { const el = document.getElementById('d-subtask-add'); if(el) el.focus(); }, 30);
+    });
+  }
+}
+
+/* ─── Sub-drawer (subtask detail) ─── */
+function renderSubDrawer() {
+  const found = findSubtask(drawerSubtaskId); if (!found) { closeSubDrawer(); return; }
+  const { task, sub } = found;
+  const cat = CATS[task.cat];
+
+
+  document.getElementById('drawer').innerHTML = `
+    <div class="drawer-topbar">
+      <button class="subdrawer-back" onclick="closeSubDrawer()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        Back
+      </button>
+      <span class="subdrawer-crumb">${task.t}</span>
+      <div class="drawer-topbar-right">
+        <div class="drawer-cat-indicator" style="background:${catColor(task.cat)}"></div>
+        <button class="btn-icon" onclick="closeDrawer()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="drawer-body">
+      <div class="drawer-title-wrap">
+        <textarea class="drawer-title-input" placeholder="Subtask title…" rows="1" id="sub-title">${sub.title}</textarea>
+      </div>
+
+      <div class="drawer-props">
+        <div class="prop-row">
+          <div class="prop-key"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Status</div>
+          <div class="prop-val">
+            <select class="prop-select" id="sub-status">
+              <option value="todo" ${sub.status==='todo'?'selected':''}>To do</option>
+              <option value="in-progress" ${sub.status==='in-progress'?'selected':''}>In progress</option>
+              <option value="done" ${sub.status==='done'?'selected':''}>Done</option>
+            </select>
+          </div>
+        </div>
+        <div class="prop-row">
+          <div class="prop-key"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Due date</div>
+          <div class="prop-val"><input class="prop-date-input" type="date" id="sub-due" value="${sub.dueDate||''}" min="2026-05-01" max="2027-12-31"></div>
+        </div>
+        <div class="prop-row">
+          <div class="prop-key"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>Timeline</div>
+          <div class="prop-val" style="font-size:0.8125rem;color:hsl(var(--muted-foreground));font-style:italic">Drag the bar on the Timeline view</div>
+        </div>
+        <div class="prop-row">
+          <div class="prop-key"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h16M4 20V8l8-4 8 4v12"/></svg>Parent task</div>
+          <div class="prop-val" style="font-size:0.8125rem;color:hsl(var(--muted-foreground))">${task.t}</div>
+        </div>
+      </div>
+
+      <div class="sep"></div>
+
+      <div class="drawer-section">
+        <div class="drawer-section-title">Description</div>
+        <textarea class="notes-ta" id="sub-notes" placeholder="Add details, links, context…">${sub.notes||''}</textarea>
+      </div>
+
+      <div class="sep"></div>
+
+      <div class="drawer-section">
+        <div class="drawer-section-title">Activity</div>
+        <div class="comment-list" id="sub-comments">
+          ${(sub.comments||[]).length ? (sub.comments).map(c => `
+            <div class="comment-item" data-cid="${c.id}">
+              <div class="comment-header">
+                <div class="comment-avatar">Y</div>
+                <span class="comment-author">You</span>
+                <span class="comment-time">${c.time}</span>
+                <button class="comment-del" onclick="deleteSubtaskComment(${sub.id},${c.id})">×</button>
+              </div>
+              ${c.text ? `<div class="comment-text">${c.text.replace(/\n/g,'<br>')}</div>` : ''}
+              ${renderCommentAttachments(c.attachments)}
+            </div>`).join('')
+          : '<p style="font-size:0.8125rem;color:hsl(var(--muted-foreground))">No comments yet.</p>'}
+        </div>
+        <div class="comment-input-wrap">
+          <div class="comment-input-avatar">Y</div>
+          <div class="comment-input-inner">
+            <div class="comment-ta-wrap" id="sub-ta-wrap">
+              <textarea class="comment-ta" id="sub-comment-ta" placeholder="Add a comment or drop files…" rows="1"></textarea>
+            </div>
+            <div class="attach-previews" id="sub-attach-previews"></div>
+            <div class="comment-actions" id="sub-comment-actions">
+              <label class="btn btn-icon attach-btn" title="Attach file" style="cursor:pointer;margin-right:auto">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+                <input type="file" id="sub-file-input" multiple style="display:none" onchange="handleFileInputChange(this.files,'sub-attach-previews')">
+              </label>
+              <button class="btn btn-outline btn-sm" onclick="cancelSubtaskComment()">Cancel</button>
+              <button class="btn btn-default btn-sm" onclick="addSubtaskComment(${sub.id})">Comment</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  // Wire sub-drawer fields
+  const subTitleEl = document.getElementById('sub-title');
+  const ar = el => { el.style.height='auto'; el.style.height=el.scrollHeight+'px'; };
+  ar(subTitleEl);
+  subTitleEl.addEventListener('input', e => { ar(e.target); sub.title = e.target.value; dbUpdateSub(sub); render(); });
+
+  document.getElementById('sub-status').addEventListener('change', e => { sub.status = e.target.value; sbUpdateSubtask(sub); render(); });
+  document.getElementById('sub-due').addEventListener('change', e => { sub.dueDate = e.target.value; sbUpdateSubtask(sub); render(); });
+  document.getElementById('sub-notes').addEventListener('input', e => { sub.notes = e.target.value; dbUpdateSub(sub); });
+
+  const scta = document.getElementById('sub-comment-ta');
+  scta.addEventListener('focus', () => document.getElementById('sub-comment-actions').classList.add('visible'));
+  scta.addEventListener('input', () => { scta.style.height='auto'; scta.style.height=scta.scrollHeight+'px'; });
+  setupCommentDrop('sub-ta-wrap', 'sub-attach-previews');
+  renderPendingPreviews('sub-attach-previews');
+  if (pendingFiles.length) document.getElementById('sub-comment-actions').classList.add('visible');
+}
+
+async function addComment(taskId) {
+  const ta = document.getElementById('d-comment-ta');
+  const text = ta.value.trim();
+  if (!text && pendingFiles.length === 0) return;
+  const task = byId(taskId); if (!task) return;
+  ta.value = ''; ta.style.height = 'auto';
+  document.getElementById('d-comment-actions').classList.remove('visible');
+  const attachments = [...pendingFiles]; pendingFiles = [];
+  const stored = attachments.length ? JSON.stringify({ text, attachments }) : text;
+  const row = await sbAddComment(taskId, stored);
+  task.comments.push(row && row.id
+    ? fmtComment(row)
+    : { id: nextCommentId++, text, attachments, time: new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true}) });
+  render(); renderDrawer();
+  setTimeout(() => { const el = document.getElementById('d-comments'); if(el) el.scrollIntoView({behavior:'smooth',block:'nearest'}); }, 50);
+}
+function cancelComment() {
+  const ta = document.getElementById('d-comment-ta'); if (!ta) return;
+  ta.value = ''; ta.style.height='auto';
+  pendingFiles = [];
+  const prev = document.getElementById('d-attach-previews'); if (prev) prev.innerHTML = '';
+  document.getElementById('d-comment-actions').classList.remove('visible');
+}
+function deleteComment(taskId, commentId) {
+  const task = byId(taskId); if (!task) return;
+  task.comments = task.comments.filter(c => c.id !== commentId);
+  sbDeleteComment(commentId);
+  renderDrawer(); render();
+}
+
+async function addSubtaskComment(subtaskId) {
+  const ta = document.getElementById('sub-comment-ta');
+  const text = ta.value.trim();
+  if (!text && pendingFiles.length === 0) return;
+  const found = findSubtask(subtaskId); if (!found) return;
+  const { sub } = found;
+  ta.value = ''; ta.style.height = 'auto';
+  document.getElementById('sub-comment-actions').classList.remove('visible');
+  const attachments = [...pendingFiles]; pendingFiles = [];
+  const stored = attachments.length ? JSON.stringify({ text, attachments }) : text;
+  const row = await sbAddSubtaskComment(subtaskId, stored);
+  if (!sub.comments) sub.comments = [];
+  sub.comments.push(row && row.id
+    ? fmtComment(row)
+    : { id: nextCommentId++, text, attachments, time: new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true}) });
+  renderDrawer();
+  setTimeout(() => { const el = document.getElementById('sub-comments'); if(el) el.scrollIntoView({behavior:'smooth',block:'nearest'}); }, 50);
+}
+function cancelSubtaskComment() {
+  const ta = document.getElementById('sub-comment-ta'); if (!ta) return;
+  ta.value = ''; ta.style.height='auto';
+  pendingFiles = [];
+  const prev = document.getElementById('sub-attach-previews'); if (prev) prev.innerHTML = '';
+  document.getElementById('sub-comment-actions').classList.remove('visible');
+}
+function deleteSubtaskComment(subtaskId, commentId) {
+  const found = findSubtask(subtaskId); if (!found) return;
+  found.sub.comments = (found.sub.comments||[]).filter(c => c.id !== commentId);
+  sbDeleteSubtaskComment(commentId);
+  renderDrawer();
+}
+
+/* ─── Tab / Filter / Render ─── */
+function switchTab(t) {
+  currentTab = t;
+  const isMobile = window.innerWidth <= 768;
+  const activeId = t === 'board' ? 'board' : t === 'timeline' ? 'tl' : 'exp';
+  ['board','tl','exp'].forEach(id => {
+    document.getElementById('v-'+id).classList.toggle('active', id === activeId);
+  });
+  document.getElementById('tb-board').classList.toggle('active', t === 'board');
+  document.getElementById('tb-tl').classList.toggle('active', t === 'timeline');
+  document.getElementById('tb-exp').classList.toggle('active', t === 'expenses');
+  document.querySelector('.filterbar').classList.toggle('hidden', t === 'expenses');
+  if (isMobile) window.scrollTo({ top: 0, behavior: 'smooth' });
+  render();
+}
+function setFilter(q, btn) {
+  filterQ = q;
+  // only deactivate period buttons
+  btn.closest('.filterbar').querySelectorAll('.filter-btn').forEach(b => {
+    if (b.id && b.id.startsWith('fq-') || !b.id) b.classList.remove('active');
+  });
+  // re-activate the correct status button
+  const sf = document.getElementById('fs-' + (filterStatus === 'in-progress' ? 'inprogress' : filterStatus));
+  if (sf) sf.classList.add('active');
+  btn.classList.add('active'); render();
+}
+function setStatusFilter(s, btn) {
+  filterStatus = s;
+  ['fs-all','fs-todo','fs-inprogress','fs-done'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.classList.remove('active');
+  });
+  btn.classList.add('active'); render();
+}
+function render() { currentTab==='board' ? renderBoard() : currentTab==='timeline' ? renderTimeline() : renderExpenses(); }
+
+/* ─── Add modal ─── */
+function openAddModal() {
+  // Rebuild category options dynamically
+  document.getElementById('fc').innerHTML = Object.entries(CATS).map(([k,v]) =>
+    `<option value="${k}">${v.label}</option>`).join('');
+  document.getElementById('add-dialog').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('ft').focus(),40);
+}
+function closeAddModal() { document.getElementById('add-dialog').classList.add('hidden'); document.getElementById('ft').value=''; }
+async function saveNewTask() {
+  const title = document.getElementById('ft').value.trim(); if (!title) { document.getElementById('ft').focus(); return; }
+  const q = parseInt(document.getElementById('fq').value);
+  const task = { id: nextId++, t: title, cat: document.getElementById('fc').value, q, status:'todo', dueDate:'', notes:'', comments:[], startMonth:QS[q].sm, endMonth:QS[q].em, open:false, order:tasks.length };
+  tasks.push(task);
+  closeAddModal(); render();
+  await sbCreate(task); // writes back the real DB id
+}
+
+document.getElementById('add-dialog').addEventListener('click', e => { if(e.target===document.getElementById('add-dialog')) closeAddModal(); });
+document.getElementById('new-cat-dialog').addEventListener('click', e => { if(e.target===document.getElementById('new-cat-dialog')) closeNewCatDialog(); });
+document.addEventListener('keydown', e => {
+  if (e.key==='Escape') {
+    if (!document.getElementById('new-cat-dialog').classList.contains('hidden')) { closeNewCatDialog(); return; }
+    if (drawerSubtaskId) { closeSubDrawer(); }
+    else { closeAddModal(); if(drawerTaskId) closeDrawer(); }
+  }
+  if (e.key==='Enter' && !document.getElementById('add-dialog').classList.contains('hidden') && document.activeElement !== document.getElementById('ft')) saveNewTask();
+  if (e.key==='Enter' && !document.getElementById('new-cat-dialog').classList.contains('hidden') && document.activeElement === document.getElementById('ncat-name')) saveNewCat();
+});
+
+loadCustomCats();
+sbInit();
+sbInitExpenses();
+</script>
+</body>
+</html>
