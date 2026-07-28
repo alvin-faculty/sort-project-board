@@ -191,10 +191,15 @@ input[type="date"] { font-family: inherit; }
 .comment-avatar { width: 1.625rem; height: 1.625rem; border-radius: 9999px; background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); font-size: 0.625rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .comment-author { font-size: 0.8125rem; font-weight: 600; }
 .comment-time { font-size: 0.75rem; color: hsl(var(--muted-foreground)); }
-.comment-del { margin-left: auto; background: none; border: none; cursor: pointer; font-size: 0.75rem; color: hsl(var(--muted-foreground)); padding: 0; opacity: 0; transition: opacity 0.12s; }
-.comment-item:hover .comment-del { opacity: 1; }
+.comment-header-actions { margin-left: auto; display: flex; align-items: center; gap: 0.125rem; opacity: 0; transition: opacity 0.12s; }
+.comment-item:hover .comment-header-actions { opacity: 1; }
+.comment-edit-btn { background: none; border: none; cursor: pointer; color: hsl(var(--muted-foreground)); padding: 0.1875rem; border-radius: calc(var(--radius) - 4px); display: flex; align-items: center; justify-content: center; }
+.comment-edit-btn:hover { color: hsl(var(--foreground)); background: hsl(var(--secondary)); }
+.comment-del { background: none; border: none; cursor: pointer; font-size: 0.75rem; color: hsl(var(--muted-foreground)); padding: 0 0.1875rem; }
 .comment-del:hover { color: hsl(var(--destructive)); }
 .comment-text { font-size: 0.875rem; line-height: 1.55; color: hsl(var(--foreground)); padding-left: 2.125rem; }
+.comment-edit-wrap { margin-left: 2.125rem; }
+.comment-edit-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem; padding-left: 2.125rem; }
 .comment-input-wrap { padding: 0.75rem 0 0; display: flex; gap: 0.625rem; align-items: flex-start; }
 .comment-input-avatar { width: 1.625rem; height: 1.625rem; border-radius: 9999px; background: hsl(var(--secondary)); color: hsl(var(--muted-foreground)); font-size: 0.625rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 0.25rem; }
 .comment-input-inner { flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
@@ -212,6 +217,17 @@ input[type="date"] { font-family: inherit; }
 .nav-slash { color: hsl(var(--border)); font-weight: 300; font-size: 1.125rem; }
 .nav-project { font-size: 0.875rem; color: hsl(var(--muted-foreground)); font-weight: 500; }
 .nav-right { margin-left: auto; display: flex; align-items: center; gap: 0.75rem; }
+.profile-badge { width: 1.75rem; height: 1.75rem; border-radius: 9999px; border: none; color: #fff; font-size: 0.6875rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; transition: transform 0.1s; }
+.profile-badge:hover { transform: scale(1.08); }
+
+/* ── Profile switcher ── */
+.profile-list { display: flex; flex-direction: column; gap: 0.375rem; margin-bottom: 0.75rem; max-height: 16rem; overflow-y: auto; }
+.profile-row { display: flex; align-items: center; gap: 0.625rem; padding: 0.5rem 0.625rem; border: 1px solid hsl(var(--border)); border-radius: calc(var(--radius) - 2px); cursor: pointer; transition: border-color 0.12s, background 0.12s; }
+.profile-row:hover { border-color: hsl(240 5.9% 78%); background: hsl(var(--secondary) / 0.5); }
+.profile-row.active { border-color: hsl(var(--primary)); background: hsl(var(--primary) / 0.06); }
+.profile-row-avatar { width: 1.75rem; height: 1.75rem; border-radius: 9999px; color: #fff; font-size: 0.6875rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.profile-row-name { flex: 1; font-size: 0.8125rem; font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.profile-row-badge { font-size: 0.6875rem; color: hsl(var(--primary)); font-weight: 600; flex-shrink: 0; }
 .nav-stat { font-size: 0.75rem; color: hsl(var(--muted-foreground)); }
 .nav-stat strong { color: hsl(var(--foreground)); font-weight: 600; }
 .progress { background: hsl(var(--secondary)); border-radius: 9999px; height: 0.375rem; width: 5rem; overflow: hidden; }
@@ -359,8 +375,8 @@ input[type="date"] { font-family: inherit; }
   /* subtask add row */
   .subtask-add-input { font-size: 0.875rem; }
 
-  /* always show comment delete on touch */
-  .comment-del { opacity: 1; }
+  /* always show comment actions on touch */
+  .comment-header-actions { opacity: 1; }
   .subtask-card-del { opacity: 1; }
 }
 
@@ -659,11 +675,29 @@ svg { flex-shrink: 0; }
 .loading-text { font-size: 0.875rem; color: hsl(var(--muted-foreground)); }
 .sb-toast { position: fixed; bottom: 1.25rem; left: 50%; transform: translateX(-50%); font-size: 0.875rem; padding: 0.625rem 1rem; border-radius: var(--radius); z-index: 400; display: none; align-items: center; gap: 0.5rem; box-shadow: 0 4px 12px rgb(0 0 0 / 0.15); white-space: nowrap; }
 .sb-toast.visible { display: flex; }
+
+/* ── Startup screen: choose who's working ── */
+.startup-screen { position: fixed; inset: 0; z-index: 500; background: hsl(var(--background)); display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+.startup-screen.hidden { display: none; }
+.startup-inner { width: 100%; max-width: 30rem; text-align: center; }
+.startup-logo { display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 800; font-size: 1.0625rem; letter-spacing: -0.01em; margin-bottom: 1.5rem; color: hsl(var(--foreground)); }
+.startup-title { font-size: 1.375rem; font-weight: 700; margin-bottom: 0.375rem; color: hsl(var(--foreground)); }
+.startup-desc { font-size: 0.8125rem; color: hsl(var(--muted-foreground)); margin-bottom: 2rem; }
+.startup-grid { display: flex; flex-wrap: wrap; gap: 1.25rem; justify-content: center; }
+.startup-avatar-btn { display: flex; flex-direction: column; align-items: center; gap: 0.625rem; background: none; border: none; cursor: pointer; padding: 0.5rem; width: 7.5rem; font-family: inherit; }
+.startup-avatar-circle { width: 4.5rem; height: 4.5rem; border-radius: 9999px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.375rem; font-weight: 700; border: 3px solid transparent; transition: border-color 0.12s, box-shadow 0.12s, transform 0.12s; }
+.startup-avatar-btn:hover .startup-avatar-circle { border-color: hsl(var(--foreground)); box-shadow: 0 4px 16px rgb(0 0 0 / 0.12); transform: translateY(-2px); }
+.startup-avatar-name { font-size: 0.8125rem; font-weight: 600; color: hsl(var(--foreground)); text-align: center; line-height: 1.3; max-width: 100%; }
 .sb-toast-error { background: hsl(var(--destructive)); color: hsl(var(--destructive-foreground)); }
 .sb-toast-ok { background: hsl(142 60% 32%); color: #fff; }
 </style>
 </head>
 <body>
+
+<!-- Startup screen: choose who's working before entering the board -->
+<div class="startup-screen" id="startup-screen">
+  <div class="startup-inner" id="startup-inner"></div>
+</div>
 
 <div class="app-shell" id="app">
   <nav class="topnav">
@@ -678,6 +712,7 @@ svg { flex-shrink: 0; }
     <div class="nav-right">
       <div class="progress"><div class="progress-bar" id="prog-bar"></div></div>
       <span class="nav-stat" id="nav-stat"></span>
+      <button class="profile-badge" id="profile-badge" onclick="openProfileDialog()" title="Your profile"></button>
       <button class="btn btn-default btn-sm" onclick="openAddModal()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
         Add task
@@ -807,6 +842,11 @@ svg { flex-shrink: 0; }
   </div>
 </div>
 
+<!-- Profile dialog -->
+<div class="dialog-overlay hidden" id="profile-dialog">
+  <div class="dialog-content" id="profile-dialog-content"></div>
+</div>
+
 <script>
 /* ─── Constants ─── */
 let CATS = {
@@ -822,6 +862,71 @@ const DEFAULT_CAT_KEYS = new Set(['space','legal','brand','inventory','staffing'
 
 /* ─── Category persistence ─── */
 const CUSTOM_CATS_KEY = 'sort_custom_cats';
+
+/* ─── Fixed user accounts — exactly three people, no free-form account creation ─── */
+const FIXED_PROFILES = [
+  { id: 'alvin', name: 'Alvin Kwan',    hsl: '262 83% 52%' },
+  { id: 'vince', name: 'Vince Lo',      hsl: '213 94% 42%' },
+  { id: 'aily',  name: 'Aily Nishioka', hsl: '330 58% 44%' },
+];
+const ACTIVE_PROFILE_KEY = 'sort_active_profile_id';
+const DEFAULT_PROFILE_HSL = '240 5.9% 40%';
+let profiles = FIXED_PROFILES;
+let activeProfileId = null;
+let profile = null; // the active profile object
+
+function initials(name) {
+  const parts = (name || '').trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return '?';
+  return parts.slice(0, 2).map(w => w[0].toUpperCase()).join('');
+}
+function loadProfiles() {
+  try { activeProfileId = localStorage.getItem(ACTIVE_PROFILE_KEY); } catch(e) {}
+  profile = profiles.find(p => p.id === activeProfileId) || null;
+}
+function persistActiveProfile() {
+  try { localStorage.setItem(ACTIVE_PROFILE_KEY, activeProfileId || ''); } catch(e) {}
+}
+function renderProfileBadge() {
+  const el = document.getElementById('profile-badge');
+  if (!el) return;
+  const hsl = profile ? profile.hsl : DEFAULT_PROFILE_HSL;
+  el.textContent = profile ? initials(profile.name) : '?';
+  el.style.background = `hsl(${hsl})`;
+  el.title = profile ? `${profile.name} — click to switch user` : 'Choose your account';
+}
+
+/* ─── Startup screen: pick who's working before entering the board ─── */
+function showStartupScreen() {
+  document.getElementById('startup-screen').classList.remove('hidden');
+  renderStartupScreen();
+}
+function hideStartupScreen() {
+  document.getElementById('startup-screen').classList.add('hidden');
+}
+function renderStartupScreen() {
+  const el = document.getElementById('startup-inner');
+  el.innerHTML = `
+    <div class="startup-logo"><div class="nav-logo-mark"></div>SORT</div>
+    <div class="startup-title">Who's working on this?</div>
+    <div class="startup-desc">Pick your account to continue.</div>
+    <div class="startup-grid">
+      ${profiles.map(p => `
+        <button class="startup-avatar-btn" onclick="enterAsProfile('${p.id}')">
+          <div class="startup-avatar-circle" style="background:hsl(${p.hsl})">${initials(p.name)}</div>
+          <span class="startup-avatar-name">${escapeHtml(p.name)}</span>
+        </button>`).join('')}
+    </div>`;
+}
+function enterAsProfile(id) {
+  const p = profiles.find(x => x.id === id);
+  if (!p) return;
+  activeProfileId = id;
+  profile = p;
+  persistActiveProfile();
+  renderProfileBadge();
+  hideStartupScreen();
+}
 
 const PRESET_COLORS = [
   '0 72% 42%',     '15 79% 48%',    '25 90% 44%',    '38 92% 40%',
@@ -883,6 +988,42 @@ function saveNewCat() {
   saveCustomCats();
   closeNewCatDialog();
   render();
+}
+
+/* ─── Profile dialog: switch between the three fixed accounts ─── */
+function openProfileDialog() {
+  document.getElementById('profile-dialog').classList.remove('hidden');
+  renderProfileDialog();
+}
+function closeProfileDialog() {
+  document.getElementById('profile-dialog').classList.add('hidden');
+}
+function renderProfileDialog() {
+  const c = document.getElementById('profile-dialog-content');
+  c.innerHTML = `
+    <div class="dialog-title">Switch user</div>
+    <div class="dialog-desc">Pick who you are.</div>
+    <div class="profile-list">
+      ${profiles.map(p => `
+        <div class="profile-row${p.id===activeProfileId?' active':''}" onclick="switchProfile('${p.id}')">
+          <div class="profile-row-avatar" style="background:hsl(${p.hsl})">${initials(p.name)}</div>
+          <span class="profile-row-name">${escapeHtml(p.name)}</span>
+          ${p.id===activeProfileId ? '<span class="profile-row-badge">Active</span>' : ''}
+        </div>`).join('')}
+    </div>
+    <div class="dialog-footer">
+      <button class="btn btn-default" onclick="closeProfileDialog()">Done</button>
+    </div>`;
+}
+function switchProfile(id) {
+  const p = profiles.find(x => x.id === id);
+  if (!p) return;
+  activeProfileId = id;
+  profile = p;
+  persistActiveProfile();
+  renderProfileBadge();
+  closeProfileDialog();
+  if (drawerTaskId) renderDrawer();
 }
 
 /* delete a custom category (moves tasks to first default cat) */
@@ -1024,7 +1165,7 @@ function migrateSlot(v, q, type) {
 
 /* ─── Rich text editor (Gutenberg-style) ─── */
 function escapeHtml(str) {
-  return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 /* legacy notes/comments were plain text; new ones are HTML from the rich editor — tell them apart */
 function looksLikeRichHtml(str) {
@@ -1113,15 +1254,18 @@ function initRichEditor(wrapId, { placeholder = '', initialHtml = '', onChange, 
 
 /* shared comment formatter — supports plain text or JSON {text, attachments:[]} */
 function fmtComment(c) {
-  let text = c.text || '', attachments = [];
+  let text = c.text || '', attachments = [], author = 'You', authorHsl = DEFAULT_PROFILE_HSL, authorId = null;
   try {
     const p = JSON.parse(text);
     if (p && typeof p === 'object' && ('text' in p || 'attachments' in p)) {
       text = p.text || ''; attachments = p.attachments || [];
+      if (p.author) author = p.author;
+      if (p.authorHsl) authorHsl = p.authorHsl;
+      if (p.authorId) authorId = p.authorId;
     }
   } catch(e) {}
   return {
-    id: c.id, text, attachments,
+    id: c.id, text, attachments, author, authorHsl, authorId,
     time: new Date(c.created_at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true})
   };
 }
@@ -1351,6 +1495,13 @@ async function sbDeleteComment(id) {
   try {
     await fetch(`${SB_URL}/comments?id=eq.${id}`, { method:'DELETE', headers:SB_HDR });
   } catch(e) { console.error('Comment delete failed:', e); }
+}
+
+/* PATCH a comment's text (used for both task and subtask comments — same table) */
+async function sbUpdateComment(id, text) {
+  try {
+    await fetch(`${SB_URL}/comments?id=eq.${id}`, { method:'PATCH', headers:SB_HDR, body:JSON.stringify({text}) });
+  } catch(e) { console.error('Comment update failed:', e); }
 }
 
 /* Subtask comments — stored in same table with subtask_id column */
@@ -1638,6 +1789,79 @@ function renderCommentAttachments(attachments) {
       ? `<img src="${a.data}" class="comment-attach-img" alt="${a.name}" title="Click to open · ${a.name}" data-dtype="${a.type}" onclick="openDataUrl(this.src,this.dataset.dtype)">`
       : `<a class="comment-attach-file" href="${a.data}" download="${a.name}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>${a.name}</a>`
   ).join('')}</div>`;
+}
+
+/* shared markup for one comment (task or subtask) — swaps to an inline editor while being edited */
+function renderCommentItem(c, deleteOnclick) {
+  const canEdit = !!(c.authorId && profile && c.authorId === profile.id);
+  if (c.id === editingCommentId) {
+    return `
+    <div class="comment-item" data-cid="${c.id}">
+      <div class="comment-header">
+        <div class="comment-avatar" style="background:hsl(${c.authorHsl||DEFAULT_PROFILE_HSL})">${initials(c.author)}</div>
+        <span class="comment-author">${escapeHtml(c.author||'You')}</span>
+        <span class="comment-time">${c.time}</span>
+      </div>
+      <div class="comment-edit-wrap rte-wrap boxed" id="edit-ta-wrap-${c.id}">
+        ${RTE_TOOLBAR_HTML}
+        <div class="rte-content" id="edit-ta-${c.id}" contenteditable="true" data-rte-content></div>
+      </div>
+      ${renderCommentAttachments(c.attachments)}
+      <div class="comment-edit-actions">
+        <button class="btn btn-outline btn-sm" onclick="cancelEditComment()">Cancel</button>
+        <button class="btn btn-default btn-sm" onclick="saveEditComment(${c.id})">Save</button>
+      </div>
+    </div>`;
+  }
+  return `
+    <div class="comment-item" data-cid="${c.id}">
+      <div class="comment-header">
+        <div class="comment-avatar" style="background:hsl(${c.authorHsl||DEFAULT_PROFILE_HSL})">${initials(c.author)}</div>
+        <span class="comment-author">${escapeHtml(c.author||'You')}</span>
+        <span class="comment-time">${c.time}</span>
+        <div class="comment-header-actions">
+          ${canEdit ? `<button class="comment-edit-btn" title="Edit" onclick="startEditComment(${c.id})">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          </button>` : ''}
+          <button class="comment-del" title="Delete" onclick="${deleteOnclick}">×</button>
+        </div>
+      </div>
+      ${c.text ? `<div class="comment-text rte-content">${toDisplayHtml(c.text)}</div>` : ''}
+      ${renderCommentAttachments(c.attachments)}
+    </div>`;
+}
+function findCommentById(id) {
+  for (const t of tasks) {
+    const c = (t.comments||[]).find(x => x.id === id);
+    if (c) return c;
+    for (const s of (t.subtasks||[])) {
+      const sc = (s.comments||[]).find(x => x.id === id);
+      if (sc) return sc;
+    }
+  }
+  return null;
+}
+let editingCommentId = null;
+function startEditComment(id) {
+  editingCommentId = id;
+  renderDrawer();
+}
+function cancelEditComment() {
+  editingCommentId = null;
+  renderDrawer();
+}
+function saveEditComment(id) {
+  const el = document.getElementById('edit-ta-' + id);
+  if (!el) return;
+  const html = el.innerHTML;
+  const text = el.textContent.trim();
+  const c = findCommentById(id);
+  if (!c) return;
+  if (!text && (!c.attachments || !c.attachments.length)) return;
+  c.text = html;
+  editingCommentId = null;
+  sbUpdateComment(id, JSON.stringify({ text: html, attachments: c.attachments || [], author: c.author, authorHsl: c.authorHsl, authorId: c.authorId }));
+  renderDrawer();
 }
 
 /* debounced PATCH for text fields (title, notes) */
@@ -2109,7 +2333,7 @@ function openDrawer(id) {
   renderDrawer();
 }
 function closeDrawer() {
-  drawerTaskId = null; drawerSubtaskId = null;
+  drawerTaskId = null; drawerSubtaskId = null; editingCommentId = null;
   document.getElementById('app').classList.remove('drawer-open');
   document.getElementById('drawer-scrim').classList.remove('open');
   document.getElementById('drawer').classList.remove('open');
@@ -2119,7 +2343,7 @@ function openSubDrawer(subtaskId) {
   renderDrawer();
 }
 function closeSubDrawer() {
-  drawerSubtaskId = null;
+  drawerSubtaskId = null; editingCommentId = null;
   renderDrawer();
 }
 
@@ -2181,17 +2405,9 @@ function renderDrawer() {
       </div>
     </div>`;
 
-  const commentsHtml = task.comments.length ? task.comments.map(c => `
-    <div class="comment-item" data-cid="${c.id}">
-      <div class="comment-header">
-        <div class="comment-avatar">Y</div>
-        <span class="comment-author">You</span>
-        <span class="comment-time">${c.time}</span>
-        <button class="comment-del" onclick="deleteComment(${task.id},${c.id})">×</button>
-      </div>
-      ${c.text ? `<div class="comment-text rte-content">${toDisplayHtml(c.text)}</div>` : ''}
-      ${renderCommentAttachments(c.attachments)}
-    </div>`).join('') : '<p style="font-size:0.8125rem;color:hsl(var(--muted-foreground))">No comments yet.</p>';
+  const commentsHtml = task.comments.length
+    ? task.comments.map(c => renderCommentItem(c, `deleteComment(${task.id},${c.id})`)).join('')
+    : '<p style="font-size:0.8125rem;color:hsl(var(--muted-foreground))">No comments yet.</p>';
 
   document.getElementById('drawer').innerHTML = `
     <div class="drawer-topbar">
@@ -2269,7 +2485,7 @@ function renderDrawer() {
         <div class="drawer-section-title">Activity</div>
         <div class="comment-list" id="d-comments">${commentsHtml}</div>
         <div class="comment-input-wrap">
-          <div class="comment-input-avatar">Y</div>
+          <div class="comment-input-avatar" style="background:hsl(${profile?profile.hsl:DEFAULT_PROFILE_HSL})">${profile?initials(profile.name):'?'}</div>
           <div class="comment-input-inner">
             <div class="comment-ta-wrap rte-wrap boxed toolbar-onfocus" id="d-ta-wrap">
               ${RTE_TOOLBAR_HTML}
@@ -2323,6 +2539,14 @@ function renderDrawer() {
   setupCommentDrop('d-ta-wrap', 'd-attach-previews');
   renderPendingPreviews('d-attach-previews');
   if (pendingFiles.length) document.getElementById('d-comment-actions').classList.add('visible');
+
+  if (editingCommentId) {
+    const editingC = task.comments.find(c => c.id === editingCommentId);
+    if (editingC) {
+      const editEl = initRichEditor('edit-ta-wrap-' + editingCommentId, { initialHtml: toEditorHtml(editingC.text) });
+      if (editEl) setTimeout(() => editEl.focus(), 40);
+    }
+  }
 
   // ── Subtask card interactions ──
   const cards = document.getElementById('d-subtask-cards');
@@ -2442,21 +2666,12 @@ function renderSubDrawer() {
       <div class="drawer-section">
         <div class="drawer-section-title">Activity</div>
         <div class="comment-list" id="sub-comments">
-          ${(sub.comments||[]).length ? (sub.comments).map(c => `
-            <div class="comment-item" data-cid="${c.id}">
-              <div class="comment-header">
-                <div class="comment-avatar">Y</div>
-                <span class="comment-author">You</span>
-                <span class="comment-time">${c.time}</span>
-                <button class="comment-del" onclick="deleteSubtaskComment(${sub.id},${c.id})">×</button>
-              </div>
-              ${c.text ? `<div class="comment-text rte-content">${toDisplayHtml(c.text)}</div>` : ''}
-              ${renderCommentAttachments(c.attachments)}
-            </div>`).join('')
-          : '<p style="font-size:0.8125rem;color:hsl(var(--muted-foreground))">No comments yet.</p>'}
+          ${(sub.comments||[]).length
+            ? (sub.comments).map(c => renderCommentItem(c, `deleteSubtaskComment(${sub.id},${c.id})`)).join('')
+            : '<p style="font-size:0.8125rem;color:hsl(var(--muted-foreground))">No comments yet.</p>'}
         </div>
         <div class="comment-input-wrap">
-          <div class="comment-input-avatar">Y</div>
+          <div class="comment-input-avatar" style="background:hsl(${profile?profile.hsl:DEFAULT_PROFILE_HSL})">${profile?initials(profile.name):'?'}</div>
           <div class="comment-input-inner">
             <div class="comment-ta-wrap rte-wrap boxed toolbar-onfocus" id="sub-ta-wrap">
               ${RTE_TOOLBAR_HTML}
@@ -2497,6 +2712,14 @@ function renderSubDrawer() {
   setupCommentDrop('sub-ta-wrap', 'sub-attach-previews');
   renderPendingPreviews('sub-attach-previews');
   if (pendingFiles.length) document.getElementById('sub-comment-actions').classList.add('visible');
+
+  if (editingCommentId) {
+    const editingC = (sub.comments||[]).find(c => c.id === editingCommentId);
+    if (editingC) {
+      const editEl = initRichEditor('edit-ta-wrap-' + editingCommentId, { initialHtml: toEditorHtml(editingC.text) });
+      if (editEl) setTimeout(() => editEl.focus(), 40);
+    }
+  }
 }
 
 async function addComment(taskId) {
@@ -2509,11 +2732,12 @@ async function addComment(taskId) {
   document.getElementById('d-ta-wrap').classList.remove('rte-focused');
   document.getElementById('d-comment-actions').classList.remove('visible');
   const attachments = [...pendingFiles]; pendingFiles = [];
-  const stored = attachments.length ? JSON.stringify({ text: html, attachments }) : html;
+  const author = profile ? profile.name : 'You', authorHsl = profile ? profile.hsl : DEFAULT_PROFILE_HSL, authorId = profile ? profile.id : null;
+  const stored = JSON.stringify({ text: html, attachments, author, authorHsl, authorId });
   const row = await sbAddComment(taskId, stored);
   task.comments.push(row && row.id
     ? fmtComment(row)
-    : { id: nextCommentId++, text: html, attachments, time: new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true}) });
+    : { id: nextCommentId++, text: html, attachments, author, authorHsl, authorId, time: new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true}) });
   render(); renderDrawer();
   setTimeout(() => { const el = document.getElementById('d-comments'); if(el) el.scrollIntoView({behavior:'smooth',block:'nearest'}); }, 50);
 }
@@ -2543,12 +2767,13 @@ async function addSubtaskComment(subtaskId) {
   document.getElementById('sub-ta-wrap').classList.remove('rte-focused');
   document.getElementById('sub-comment-actions').classList.remove('visible');
   const attachments = [...pendingFiles]; pendingFiles = [];
-  const stored = attachments.length ? JSON.stringify({ text: html, attachments }) : html;
+  const author = profile ? profile.name : 'You', authorHsl = profile ? profile.hsl : DEFAULT_PROFILE_HSL, authorId = profile ? profile.id : null;
+  const stored = JSON.stringify({ text: html, attachments, author, authorHsl, authorId });
   const row = await sbAddSubtaskComment(subtaskId, stored);
   if (!sub.comments) sub.comments = [];
   sub.comments.push(row && row.id
     ? fmtComment(row)
-    : { id: nextCommentId++, text: html, attachments, time: new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true}) });
+    : { id: nextCommentId++, text: html, attachments, author, authorHsl, authorId, time: new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true}) });
   renderDrawer();
   setTimeout(() => { const el = document.getElementById('sub-comments'); if(el) el.scrollIntoView({behavior:'smooth',block:'nearest'}); }, 50);
 }
@@ -2633,6 +2858,9 @@ document.addEventListener('keydown', e => {
 });
 
 loadCustomCats();
+loadProfiles();
+renderProfileBadge();
+showStartupScreen();
 sbInit();
 sbInitExpenses();
 </script>
