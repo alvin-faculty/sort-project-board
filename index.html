@@ -170,6 +170,8 @@ input[type="date"] { font-family: inherit; }
 .rte-content li { margin-bottom: 0.25em; }
 .rte-content blockquote { border-left: 3px solid hsl(var(--border)); padding-left: 0.75em; margin: 0 0 0.625em; color: hsl(var(--muted-foreground)); font-style: italic; }
 .rte-content a { color: hsl(213 94% 42%); text-decoration: underline; }
+.rte-content img { display: block; max-width: 100%; height: auto; border-radius: calc(var(--radius) - 4px); margin: 0 0 0.625em; }
+.rte-content.rte-drag-over { outline: 2px dashed hsl(var(--primary)); outline-offset: -2px; background: hsl(var(--accent) / 0.4); border-radius: calc(var(--radius) - 4px); }
 
 /* description editor: blends into the panel, toolbar separated by a hairline */
 .rte-wrap .rte-toolbar { border-bottom: 1px solid hsl(var(--border)); margin-bottom: 0.5rem; padding: 0 0 0.5rem; }
@@ -305,6 +307,90 @@ input[type="date"] { font-family: inherit; }
 .exp-add-row:hover { background: hsl(var(--accent) / 0.4); color: hsl(var(--foreground)); }
 .exp-empty td { padding: 2rem; text-align: center; color: hsl(var(--muted-foreground)); font-size: 0.8125rem; }
 
+/* ── Notes ── */
+.notes-root { display: flex; flex: 1; min-height: 0; }
+.notes-sidebar { width: 13rem; flex-shrink: 0; border-right: 1px solid hsl(var(--border)); overflow-y: auto; padding: 1rem 0.75rem; -webkit-overflow-scrolling: touch; }
+.notes-sidebar-hdr-row { display: flex; align-items: center; justify-content: space-between; padding: 0 0.5rem 0.5rem; }
+.notes-sidebar-hdr { font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: hsl(var(--muted-foreground)); }
+.notes-manage-tags-btn { font: inherit; font-size: 0.6875rem; font-weight: 500; background: none; border: none; color: hsl(var(--muted-foreground)); cursor: pointer; padding: 0.125rem 0.375rem; border-radius: calc(var(--radius) - 6px); transition: background 0.12s, color 0.12s; }
+.notes-manage-tags-btn:hover { background: hsl(var(--accent)); color: hsl(var(--foreground)); }
+.notes-sidebar-section { margin-top: 1.25rem; }
+.notes-author-dot { display: inline-block; width: 0.5rem; height: 0.5rem; border-radius: 9999px; margin-right: 0.375rem; vertical-align: middle; flex-shrink: 0; }
+.notes-tag-list { display: flex; flex-direction: column; gap: 0.125rem; }
+.notes-tag-item { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; font: inherit; font-size: 0.8125rem; text-align: left; padding: 0.375rem 0.5rem; border-radius: calc(var(--radius) - 4px); border: none; background: transparent; color: hsl(var(--foreground)); cursor: pointer; transition: background 0.12s, color 0.12s; }
+.notes-tag-item:hover { background: hsl(var(--accent)); }
+.notes-tag-item.active { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+.notes-tag-item.active .notes-tag-count { color: hsl(var(--primary-foreground) / 0.75); }
+.notes-tag-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.notes-tag-count { font-size: 0.6875rem; color: hsl(var(--muted-foreground)); flex-shrink: 0; }
+.notes-tag-empty { font-size: 0.75rem; color: hsl(var(--muted-foreground)); padding: 0.375rem 0.5rem; line-height: 1.5; }
+
+.notes-main { flex: 1; min-width: 0; overflow-y: auto; padding: 1.25rem; -webkit-overflow-scrolling: touch; }
+.notes-composer { display: flex; gap: 0.625rem; background: hsl(var(--card)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); padding: 0.875rem; box-shadow: 0 1px 2px rgb(0 0 0 / 0.04); margin-bottom: 1.25rem; }
+#notes-compose-wrap .rte-content { min-height: 8.25rem; } /* ~5 lines at this editor's font-size/line-height */
+.notes-composer-inner { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.notes-tag-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.375rem; padding-top: 0.125rem; }
+.notes-tag-chips { display: flex; flex-wrap: wrap; gap: 0.375rem; }
+.notes-tag-chip-editable { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.75rem; font-weight: 500; background: hsl(var(--secondary)); color: hsl(var(--secondary-foreground)); border-radius: 9999px; padding: 0.1875rem 0.375rem 0.1875rem 0.625rem; }
+.notes-tag-chip-editable button { display: flex; align-items: center; background: none; border: none; color: hsl(var(--muted-foreground)); cursor: pointer; font-size: 0.9375rem; line-height: 1; padding: 0; }
+.notes-tag-chip-editable button:hover { color: hsl(var(--destructive)); }
+.notes-tag-input-wrap { position: relative; flex: 1; min-width: 7rem; }
+.notes-tag-input { width: 100%; font: inherit; font-size: 0.75rem; border: none; background: transparent; outline: none; color: hsl(var(--foreground)); padding: 0.25rem 0; }
+.notes-tag-input::placeholder { color: hsl(var(--muted-foreground)); }
+.notes-tag-suggest { position: absolute; top: calc(100% + 0.25rem); left: 0; min-width: 10rem; max-width: 16rem; max-height: 12rem; overflow-y: auto; background: hsl(var(--card)); border: 1px solid hsl(var(--border)); border-radius: calc(var(--radius) - 4px); box-shadow: 0 8px 20px rgb(0 0 0 / 0.15); padding: 0.25rem; z-index: 20; }
+.notes-tag-suggest[hidden] { display: none; }
+.notes-tag-suggest-item { display: block; width: 100%; text-align: left; font: inherit; font-size: 0.75rem; background: none; border: none; color: hsl(var(--foreground)); padding: 0.375rem 0.5rem; border-radius: calc(var(--radius) - 6px); cursor: pointer; }
+.notes-tag-suggest-item:hover, .notes-tag-suggest-item.active { background: hsl(var(--accent)); }
+.notes-composer-actions { display: flex; align-items: center; justify-content: flex-end; gap: 0.625rem; }
+.notes-composer-hint { font-size: 0.6875rem; color: hsl(var(--muted-foreground)); margin-right: auto; }
+.tag-manage-list { display: flex; flex-direction: column; gap: 0.5rem; max-height: 18rem; overflow-y: auto; margin: 0.25rem 0 1rem; }
+.tag-manage-row { display: flex; align-items: center; gap: 0.5rem; }
+.tag-manage-row .input { flex: 1; min-width: 0; }
+.tag-manage-del:hover { color: hsl(var(--destructive)); border-color: hsl(var(--destructive)); }
+
+.notes-feed { columns: 2; column-gap: 0.75rem; }
+.note-card { background: hsl(var(--card)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); padding: 0.875rem; box-shadow: 0 1px 2px rgb(0 0 0 / 0.04); break-inside: avoid; margin-bottom: 0.75rem; }
+.note-card.pinned { border-left: 3px solid hsl(38 92% 45%); }
+.note-time { font-size: 0.75rem; color: hsl(var(--muted-foreground)); }
+.note-pin-btn { display: flex; align-items: center; background: none; border: none; color: hsl(var(--muted-foreground) / 0.5); cursor: pointer; padding: 0.1875rem; border-radius: calc(var(--radius) - 6px); transition: background 0.12s, color 0.12s; }
+.note-pin-btn:hover { background: hsl(var(--accent)); color: hsl(var(--foreground)); }
+.note-pin-btn.pinned { color: hsl(38 92% 45%); }
+.note-pin-btn.pinned:hover { color: hsl(38 92% 40%); }
+.note-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-top: 0.625rem; }
+.note-card-footer-actions { display: flex; align-items: center; gap: 0.125rem; flex-shrink: 0; }
+.note-card-actions { display: flex; align-items: center; gap: 0.125rem; opacity: 0; transition: opacity 0.12s; }
+.note-card:hover .note-card-actions { opacity: 1; }
+.note-content { font-size: 0.875rem; }
+.note-tags { display: flex; flex-wrap: wrap; gap: 0.375rem; flex: 1; min-width: 0; }
+
+/* chain of idea-entries within one note */
+.note-chain { display: flex; flex-direction: column; }
+.note-chain-entry { position: relative; padding-left: 1.125rem; }
+.note-chain-entry:not(:last-child) { padding-bottom: 0.75rem; }
+.note-chain-entry::before { content: ''; position: absolute; left: 0.1875rem; top: 0.4375rem; width: 0.375rem; height: 0.375rem; border-radius: 9999px; background: hsl(var(--border)); }
+.note-chain-entry:not(:last-child)::after { content: ''; position: absolute; left: 0.359375rem; top: 0.8125rem; bottom: -0.125rem; width: 1px; background: hsl(var(--border)); }
+.note-chain-entry-hdr { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem; }
+.note-chain-entry:hover .comment-header-actions { opacity: 1; }
+.note-chain-actions { display: flex; align-items: center; gap: 0.25rem; padding-left: 1.125rem; margin-top: 0.125rem; flex-wrap: wrap; }
+.note-chain-add-trigger { display: inline-flex; align-items: center; font: inherit; font-size: 0.75rem; font-weight: 500; color: hsl(var(--muted-foreground)); background: none; border: none; cursor: pointer; padding: 0.25rem 0.375rem; border-radius: calc(var(--radius) - 6px); transition: color 0.12s; }
+.note-chain-add-trigger:hover { color: hsl(var(--foreground)); }
+.note-chain-add-composer { margin-top: 0.5rem; padding-left: 1.125rem; display: flex; flex-direction: column; gap: 0.5rem; }
+
+/* linking separate notes into a thread — linked notes render as one fused, stacked block
+   in the feed instead of scattering with a "view thread" popup */
+.notes-reply-banner { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; font-size: 0.75rem; color: hsl(var(--muted-foreground)); background: hsl(var(--accent) / 0.6); border-radius: calc(var(--radius) - 4px); padding: 0.375rem 0.375rem 0.375rem 0.625rem; }
+.notes-reply-banner span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.notes-reply-banner button { flex-shrink: 0; background: none; border: none; color: hsl(var(--muted-foreground)); cursor: pointer; font-size: 0.9375rem; line-height: 1; padding: 0.125rem; border-radius: calc(var(--radius) - 6px); }
+.notes-reply-banner button:hover { color: hsl(var(--destructive)); }
+.note-thread-stack { display: flex; flex-direction: column; break-inside: avoid; margin-bottom: 0.75rem; border: 1px solid hsl(var(--border)); border-radius: var(--radius); box-shadow: 0 1px 2px rgb(0 0 0 / 0.04); overflow: hidden; }
+.note-thread-stack.pinned { border-left: 3px solid hsl(38 92% 45%); }
+.note-thread-stack .note-card { margin-bottom: 0; border: none; border-radius: 0; box-shadow: none; }
+.note-thread-stack .note-card.pinned { border-left: none; }
+.note-thread-stack .note-card:not(:first-child) { border-top: 1px solid hsl(var(--border)); }
+.note-tag-chip { font: inherit; font-size: 0.75rem; font-weight: 500; background: hsl(var(--secondary)); color: hsl(var(--secondary-foreground)); border: none; border-radius: 9999px; padding: 0.1875rem 0.625rem; cursor: pointer; transition: background 0.12s; }
+.note-tag-chip:hover { background: hsl(var(--accent)); }
+.notes-empty { text-align: center; color: hsl(var(--muted-foreground)); font-size: 0.8125rem; padding: 2.5rem 1rem; }
+
 /* ── MOBILE (≤768px) ── */
 @media (max-width: 768px) {
 
@@ -378,6 +464,15 @@ input[type="date"] { font-family: inherit; }
   /* always show comment actions on touch */
   .comment-header-actions { opacity: 1; }
   .subtask-card-del { opacity: 1; }
+
+  /* notes: stack sidebar above feed, natural scroll */
+  .notes-root { flex-direction: column; }
+  .notes-sidebar { width: 100%; border-right: none; border-bottom: 1px solid hsl(var(--border)); overflow-x: auto; overflow-y: visible; padding: 0.75rem 0.875rem; }
+  .notes-tag-list { flex-direction: row; }
+  .notes-tag-item { flex-shrink: 0; white-space: nowrap; }
+  .notes-main { padding: 0.875rem; }
+  .note-card-actions { opacity: 1; }
+  .notes-feed { columns: 1; }
 }
 
 @media (max-width: 400px) {
@@ -707,6 +802,7 @@ svg { flex-shrink: 0; }
     <div class="tabs-list" style="margin-left:0.25rem">
       <button class="tabs-trigger active" id="tb-board" onclick="switchTab('board')">Board</button>
       <button class="tabs-trigger" id="tb-tl" onclick="switchTab('timeline')">Timeline</button>
+      <button class="tabs-trigger" id="tb-notes" onclick="switchTab('notes')">Notes</button>
       <button class="tabs-trigger" id="tb-exp" onclick="switchTab('expenses')">Expenses</button>
     </div>
     <div class="nav-right">
@@ -772,6 +868,9 @@ svg { flex-shrink: 0; }
           </div>
         </div>
       </div>
+    </div>
+    <div class="view" id="v-notes">
+      <div class="notes-root" id="notes-root"></div>
     </div>
   </div>
 </div>
@@ -845,6 +944,18 @@ svg { flex-shrink: 0; }
 <!-- Profile dialog -->
 <div class="dialog-overlay hidden" id="profile-dialog">
   <div class="dialog-content" id="profile-dialog-content"></div>
+</div>
+
+<!-- Manage tags dialog -->
+<div class="dialog-overlay hidden" id="tag-manage-dialog">
+  <div class="dialog-content">
+    <div class="dialog-title">Manage tags</div>
+    <div class="dialog-desc">Rename or delete a tag across every note that uses it.</div>
+    <div class="tag-manage-list" id="tag-manage-list"></div>
+    <div class="dialog-footer">
+      <button class="btn btn-outline" onclick="closeTagManageDialog()">Done</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -1181,7 +1292,8 @@ function toEditorHtml(str) { return looksLikeRichHtml(str) ? str : plainToRichHt
 /* value to render read-only (comment history) */
 function toDisplayHtml(str) { return looksLikeRichHtml(str) ? str : escapeHtml(str || '').replace(/\n/g, '<br>'); }
 
-const RTE_TOOLBAR_HTML = `
+function rteToolbarHtml(opts = {}) {
+  return `
   <div class="rte-toolbar" data-rte-toolbar>
     <button type="button" class="rte-btn" data-cmd="formatBlock" data-val="H2" title="Heading">H2</button>
     <button type="button" class="rte-btn" data-cmd="formatBlock" data-val="H3" title="Subheading">H3</button>
@@ -1196,7 +1308,13 @@ const RTE_TOOLBAR_HTML = `
     <button type="button" class="rte-btn" data-cmd="formatBlock" data-val="BLOCKQUOTE" title="Quote">Quote</button>
     <span class="rte-sep"></span>
     <button type="button" class="rte-btn" data-cmd="link" title="Link">Link</button>
+    ${opts.image ? `<button type="button" class="rte-btn" data-cmd="image" title="Insert photo">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+    </button>` : ''}
   </div>`;
+}
+const RTE_TOOLBAR_HTML = rteToolbarHtml();
+const RTE_TOOLBAR_HTML_IMG = rteToolbarHtml({ image: true });
 
 const RTE_CMD_STATE = { bold: 'bold', italic: 'italic', strikeThrough: 'strikeThrough', insertUnorderedList: 'insertUnorderedList', insertOrderedList: 'insertOrderedList' };
 function updateToolbarState(toolbar, content) {
@@ -1213,6 +1331,34 @@ function updateToolbarState(toolbar, content) {
     } catch (e) {}
     btn.classList.toggle('active', active);
   });
+}
+/* reads an image file and inserts it inline as a base64 data URI at the current
+   cursor/selection — shared by the toolbar's file picker and drag-and-drop */
+async function insertImageFile(content, file) {
+  if (!file || !file.type.startsWith('image/')) return;
+  if (file.size > 5 * 1024 * 1024) { toast(`${file.name} exceeds 5 MB limit`, 'error', 4000); return; }
+  const dataUrl = await fileToBase64(file);
+  document.execCommand('insertHTML', false, `<img src="${dataUrl}" alt="${escAttr(file.name)}">`);
+}
+/* opens a file picker and inserts the chosen image inline at the current cursor position —
+   the file dialog steals focus/selection, so the caret range is captured before it opens
+   and restored once the file has been read */
+function insertImageIntoEditor(content, onDone) {
+  const sel = window.getSelection();
+  const savedRange = sel.rangeCount ? sel.getRangeAt(0).cloneRange() : null;
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = 'image/*'; input.style.display = 'none';
+  input.addEventListener('change', async () => {
+    const file = input.files && input.files[0];
+    input.remove();
+    if (!file) return;
+    content.focus();
+    if (savedRange) { sel.removeAllRanges(); sel.addRange(savedRange); }
+    await insertImageFile(content, file);
+    onDone && onDone();
+  });
+  document.body.appendChild(input);
+  input.click();
 }
 /* wires up a .rte-wrap containing [data-rte-toolbar] + [data-rte-content]; returns the content element */
 function initRichEditor(wrapId, { placeholder = '', initialHtml = '', onChange, onFocus, onBlur } = {}) {
@@ -1232,6 +1378,9 @@ function initRichEditor(wrapId, { placeholder = '', initialHtml = '', onChange, 
         if (url) document.execCommand('createLink', false, url);
       } else if (cmd === 'formatBlock') {
         document.execCommand('formatBlock', false, val);
+      } else if (cmd === 'image') {
+        insertImageIntoEditor(content, () => { updateToolbarState(toolbar, content); onChange && onChange(content.innerHTML); });
+        return; // async — the callback above fires once the picked file is read
       } else {
         document.execCommand(cmd, false, null);
       }
@@ -1241,13 +1390,41 @@ function initRichEditor(wrapId, { placeholder = '', initialHtml = '', onChange, 
   });
 
   content.addEventListener('input', () => {
-    if (content.textContent.trim() === '' && content.innerHTML !== '') content.innerHTML = '';
+    if (content.textContent.trim() === '' && !content.querySelector('img') && content.innerHTML !== '') content.innerHTML = '';
     onChange && onChange(content.innerHTML);
   });
   content.addEventListener('keyup', () => updateToolbarState(toolbar, content));
   content.addEventListener('mouseup', () => updateToolbarState(toolbar, content));
   content.addEventListener('focus', () => { wrap.classList.add('rte-focused'); updateToolbarState(toolbar, content); onFocus && onFocus(); });
   content.addEventListener('blur', () => { wrap.classList.remove('rte-focused'); onBlur && onBlur(); });
+
+  /* drag-and-drop images straight into the editor — only wired where the toolbar
+     offers image insertion, so this stays scoped to the notes composer/entries */
+  if (toolbar.querySelector('[data-cmd="image"]')) {
+    const isFileDrag = e => e.dataTransfer && e.dataTransfer.types.includes('Files');
+    content.addEventListener('dragover', e => {
+      if (!isFileDrag(e)) return;
+      e.preventDefault();
+      content.classList.add('rte-drag-over');
+    });
+    content.addEventListener('dragleave', e => {
+      if (!content.contains(e.relatedTarget)) content.classList.remove('rte-drag-over');
+    });
+    content.addEventListener('drop', e => {
+      if (!isFileDrag(e)) return;
+      const files = [...e.dataTransfer.files].filter(f => f.type.startsWith('image/'));
+      content.classList.remove('rte-drag-over');
+      if (!files.length) return;
+      e.preventDefault();
+      content.focus();
+      const range = document.caretRangeFromPoint ? document.caretRangeFromPoint(e.clientX, e.clientY) : null;
+      if (range) { const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range); }
+      (async () => {
+        for (const file of files) await insertImageFile(content, file);
+        onChange && onChange(content.innerHTML);
+      })();
+    });
+  }
 
   return content;
 }
@@ -1695,6 +1872,674 @@ function expenseSummaryHTML() {
     <div class="exp-card"><div class="exp-card-label">Actual total</div><div class="exp-card-value">${fmtCurrency(totalActual)}</div></div>
     <div class="exp-card"><div class="exp-card-label">Paid</div><div class="exp-card-value">${fmtCurrency(totalPaid)}</div></div>
   `;
+}
+
+/* ─── Notes: tag-based idea stream ─── */
+const NOTES_LOCAL_KEY = 'sort_notes_fallback';
+const NOTES_DRAFT_KEY = 'sort_notes_draft';
+const NOTES_PINNED_KEY = 'sort_notes_pinned';
+let notes = [];
+let nextNoteId = 1;
+let notesUseLocal = false;
+let notesTagFilters = [];       // active tag filters (AND-combined); empty = show all notes
+let notesAuthorFilters = [];    // active author filters (OR-combined); empty = show all authors
+let notesDraftTags = [];        // tags attached to the in-progress composer entry
+let notesDraftContent = '';     // composer HTML, preserved across re-renders and reloads
+let editingNoteId = null;       // note currently in tag-edit mode
+let editingNoteTags = [];
+let editingEntry = null;        // {noteId, entryId} of the chain entry currently being edited
+let addingEntryToNoteId = null; // note whose "add to this idea" composer is open
+let pinnedNoteIds = [];         // pin state is a personal view preference — kept per-browser, not synced
+let composerReplyTo = null;     // {noteId, snippet} when the composer is about to post a note linked to another
+
+function loadNotesLocal() {
+  try { notes = JSON.parse(localStorage.getItem(NOTES_LOCAL_KEY) || '[]'); } catch(e) { notes = []; }
+  nextNoteId = notes.length ? Math.max(...notes.map(n => n.id)) + 1 : 1;
+}
+function saveNotesLocal() { localStorage.setItem(NOTES_LOCAL_KEY, JSON.stringify(notes)); }
+
+/* composer draft survives page reloads so an unposted idea is never lost */
+function loadNotesDraft() {
+  try {
+    const d = JSON.parse(localStorage.getItem(NOTES_DRAFT_KEY) || 'null');
+    if (d && typeof d === 'object') {
+      notesDraftContent = d.content || '';
+      notesDraftTags = Array.isArray(d.tags) ? d.tags : [];
+      composerReplyTo = d.replyTo || null;
+    }
+  } catch(e) {}
+}
+function saveNotesDraft() {
+  const text = notesDraftContent.replace(/<[^>]*>/g, '').trim();
+  if (!text && !notesDraftTags.length && !composerReplyTo) { localStorage.removeItem(NOTES_DRAFT_KEY); return; }
+  localStorage.setItem(NOTES_DRAFT_KEY, JSON.stringify({ content: notesDraftContent, tags: notesDraftTags, replyTo: composerReplyTo }));
+}
+
+/* pin state: which notes float to the top of the feed — local to this browser only,
+   since it's a personal view preference rather than shared note content */
+function loadPinnedNotes() {
+  try { pinnedNoteIds = JSON.parse(localStorage.getItem(NOTES_PINNED_KEY) || '[]'); } catch(e) { pinnedNoteIds = []; }
+}
+function savePinnedNotes() { localStorage.setItem(NOTES_PINNED_KEY, JSON.stringify(pinnedNoteIds)); }
+function isPinned(id) { return pinnedNoteIds.includes(id); }
+function togglePinNote(id) {
+  const i = pinnedNoteIds.indexOf(id);
+  if (i === -1) pinnedNoteIds.push(id); else pinnedNoteIds.splice(i, 1);
+  savePinnedNotes();
+  renderNotes();
+}
+function sortNotesForDisplay(list) {
+  return [...list].sort((a, b) => (isPinned(b.id) ? 1 : 0) - (isPinned(a.id) ? 1 : 0));
+}
+
+/* map DB row → JS note */
+/* A note is a chain of dated idea-entries. The `notes` table has no column for that (and the
+   anon key can't run schema migrations), so the chain is JSON-packed into the existing `content`
+   text column: {entries:[{id,html,author,authorId,authorHsl,createdAt}, ...], replyToId}. Older rows
+   just hold raw HTML from before chains existed — those are read back as a single-entry chain. */
+function parseNoteContent(row) {
+  try {
+    const parsed = JSON.parse(row.content);
+    if (parsed && Array.isArray(parsed.entries) && parsed.entries.length) {
+      return { entries: parsed.entries, replyToId: parsed.replyToId || null };
+    }
+  } catch(e) {}
+  return {
+    entries: [{
+      id: 1, html: row.content || '',
+      author: row.author || 'You', authorId: row.author_id || null, authorHsl: row.author_hsl || DEFAULT_PROFILE_HSL,
+      createdAt: row.created_at || new Date().toISOString(),
+    }],
+    replyToId: null,
+  };
+}
+function fromNoteDB(row) {
+  const parsed = parseNoteContent(row);
+  return {
+    id:        row.id,
+    entries:   parsed.entries,
+    replyToId: parsed.replyToId,
+    tags:      Array.isArray(row.tags) ? row.tags : [],
+    author:    row.author    || 'You',
+    authorId:  row.author_id || null,
+    authorHsl: row.author_hsl || DEFAULT_PROFILE_HSL,
+    createdAt: row.created_at || new Date().toISOString(),
+  };
+}
+/* map JS note → DB payload */
+function toNoteDB(n) {
+  return {
+    content:    JSON.stringify({ entries: n.entries || [], replyToId: n.replyToId || null }),
+    tags:       n.tags || [],
+    author:     n.author    || null,
+    author_id:  n.authorId  || null,
+    author_hsl: n.authorHsl || null,
+  };
+}
+function nextEntryId(note) { return (note.entries.length ? Math.max(...note.entries.map(e => e.id)) : 0) + 1; }
+
+/* initialise: load notes from Supabase, falling back to localStorage if the
+   `notes` table doesn't exist yet (no schema migration required to use this page) */
+async function sbInitNotes() {
+  try {
+    const res  = await fetch(`${SB_URL}/notes?order=created_at.desc`, { headers: SB_HDR });
+    const body = await res.json();
+    if (!Array.isArray(body)) throw new Error(JSON.stringify(body));
+    notes = body.map(fromNoteDB);
+    nextNoteId = notes.length ? Math.max(...notes.map(n => n.id)) + 1 : 1;
+  } catch(e) {
+    console.warn('Notes table not found — using local storage:', e);
+    notesUseLocal = true;
+    loadNotesLocal();
+  }
+  if (currentTab === 'notes') renderNotes();
+}
+
+async function sbCreateNote(note) {
+  if (notesUseLocal) { saveNotesLocal(); return; }
+  try {
+    const res  = await fetch(`${SB_URL}/notes`, { method:'POST', headers:SB_HDR, body: JSON.stringify(toNoteDB(note)) });
+    const rows = await res.json();
+    const row  = Array.isArray(rows) ? rows[0] : rows;
+    if (!row || !row.id) throw new Error(JSON.stringify(rows));
+    note.id = row.id; nextNoteId = Math.max(nextNoteId, row.id + 1);
+    note.createdAt = row.created_at || note.createdAt;
+    if (note.entries[0]) note.entries[0].createdAt = note.createdAt;
+  } catch(e) {
+    console.error('Note create failed — switching to local storage:', e);
+    notesUseLocal = true; saveNotesLocal();
+  }
+}
+async function sbUpdateNote(note) {
+  if (notesUseLocal) { saveNotesLocal(); return; }
+  try { await fetch(`${SB_URL}/notes?id=eq.${note.id}`, { method:'PATCH', headers:SB_HDR, body: JSON.stringify(toNoteDB(note)) }); }
+  catch(e) { console.error('Note update failed:', e); }
+}
+async function sbDeleteNote(id) {
+  if (notesUseLocal) { saveNotesLocal(); return; }
+  try { await fetch(`${SB_URL}/notes?id=eq.${id}`, { method:'DELETE', headers:SB_HDR }); }
+  catch(e) { console.error('Note delete failed:', e); }
+}
+
+function fmtNoteTime(iso) {
+  return new Date(iso).toLocaleDateString('en-US', { month:'numeric', day:'numeric', year:'numeric' });
+}
+
+/* ── linking separate notes into a thread (each note stays its own card; a light replyToId
+   pointer chains them, same JSON-in-content trick as entries — no schema change needed) ── */
+function plainTextSnippet(html, maxLen) {
+  const div = document.createElement('div');
+  div.innerHTML = html || '';
+  const text = (div.textContent || '').trim().replace(/\s+/g, ' ');
+  return text.length > maxLen ? text.slice(0, maxLen) + '…' : text;
+}
+function threadRootId(note) {
+  let cur = note, guard = 0;
+  while (cur.replyToId && guard++ < 50) {
+    const parent = notes.find(x => x.id === cur.replyToId);
+    if (!parent) break;
+    cur = parent;
+  }
+  return cur.id;
+}
+function getThreadNotes(rootId) {
+  return notes.filter(n => threadRootId(n) === rootId).sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+}
+function startLinkedNote(noteId) {
+  const n = notes.find(x => x.id === noteId); if (!n) return;
+  const lastEntry = n.entries[n.entries.length - 1];
+  composerReplyTo = { noteId, snippet: plainTextSnippet(lastEntry ? lastEntry.html : '', 60) };
+  notesDraftTags = [...new Set([...notesDraftTags, ...(n.tags || [])])];
+  saveNotesDraft();
+  renderNotes();
+  const el = document.getElementById('notes-compose-content');
+  if (el) { el.scrollIntoView({ behavior:'smooth', block:'center' }); el.focus(); }
+}
+function clearComposerReplyTo() {
+  composerReplyTo = null;
+  saveNotesDraft();
+  renderNotes();
+}
+/* groups the (already filtered + pin-sorted) display list by thread root, so linked notes
+   render as one fused stack instead of scattering independently through the masonry feed */
+function groupNotesByThread(list) {
+  const byRoot = new Map();
+  const order = [];
+  list.forEach(n => {
+    const rootId = threadRootId(n);
+    if (!byRoot.has(rootId)) { byRoot.set(rootId, []); order.push(rootId); }
+    byRoot.get(rootId).push(n);
+  });
+  return order.map(rootId => byRoot.get(rootId).sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)));
+}
+function renderNoteGroup(group) {
+  if (group.length === 1) return renderNoteCard(group[0]);
+  const anyPinned = group.some(n => isPinned(n.id));
+  return `<div class="note-thread-stack${anyPinned ? ' pinned' : ''}">${group.map(n => renderNoteCard(n)).join('')}</div>`;
+}
+
+/* ── tag chip + autocomplete helpers (shared by composer + edit mode) ── */
+function normalizeTag(raw) { return (raw || '').trim().replace(/^#+/, '').toLowerCase(); }
+function getAllTagNames() {
+  const set = new Set();
+  notes.forEach(n => (n.tags || []).forEach(t => set.add(t)));
+  return [...set].sort();
+}
+function renderTagChips(tags) {
+  return tags.map((t, i) => `
+    <span class="notes-tag-chip-editable">#${escapeHtml(t)}<button type="button" data-idx="${i}" title="Remove tag">×</button></span>
+  `).join('');
+}
+/* wires an [input, chips, suggest] trio to a live tag array — handles Enter/comma
+   to add, Backspace-on-empty to pop, arrow keys + click for autocomplete, and
+   delegated clicks on chip × buttons. `onChange` fires after any mutation. */
+function setupTagField(inputEl, chipsEl, suggestEl, tagArr, onChange) {
+  if (!inputEl || !chipsEl) return;
+  let matches = [], activeIdx = -1;
+
+  const refreshChips = () => { chipsEl.innerHTML = renderTagChips(tagArr); onChange && onChange(); };
+  const closeSuggest = () => { if (suggestEl) { suggestEl.hidden = true; suggestEl.innerHTML = ''; } matches = []; activeIdx = -1; };
+  const highlight = () => suggestEl.querySelectorAll('.notes-tag-suggest-item').forEach((el, i) => el.classList.toggle('active', i === activeIdx));
+  const openSuggest = () => {
+    if (!suggestEl) return;
+    const q = normalizeTag(inputEl.value);
+    matches = q ? getAllTagNames().filter(t => t.includes(q) && !tagArr.includes(t)).slice(0, 6) : [];
+    if (!matches.length) { closeSuggest(); return; }
+    activeIdx = 0;
+    suggestEl.hidden = false;
+    suggestEl.innerHTML = matches.map((t, i) => `<button type="button" class="notes-tag-suggest-item" data-idx="${i}">#${escapeHtml(t)}</button>`).join('');
+    highlight();
+  };
+  const addTag = val => {
+    const v = normalizeTag(val);
+    if (v && !tagArr.includes(v)) tagArr.push(v);
+    inputEl.value = '';
+    closeSuggest();
+    refreshChips();
+  };
+
+  inputEl.addEventListener('input', openSuggest);
+  inputEl.addEventListener('keydown', e => {
+    if (matches.length && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+      e.preventDefault();
+      activeIdx = e.key === 'ArrowDown' ? (activeIdx + 1) % matches.length : (activeIdx - 1 + matches.length) % matches.length;
+      highlight();
+      return;
+    }
+    if (e.key === 'Escape' && matches.length) { closeSuggest(); return; }
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      addTag(matches.length && activeIdx >= 0 ? matches[activeIdx] : inputEl.value);
+    } else if (e.key === 'Backspace' && !inputEl.value && tagArr.length) {
+      tagArr.pop();
+      refreshChips();
+    }
+  });
+  if (suggestEl) {
+    suggestEl.addEventListener('mousedown', e => {
+      const btn = e.target.closest('.notes-tag-suggest-item'); if (!btn) return;
+      e.preventDefault();
+      addTag(matches[parseInt(btn.dataset.idx)]);
+      inputEl.focus();
+    });
+    inputEl.addEventListener('blur', () => setTimeout(closeSuggest, 120));
+  }
+  chipsEl.addEventListener('click', e => {
+    const btn = e.target.closest('button[data-idx]'); if (!btn) return;
+    tagArr.splice(parseInt(btn.dataset.idx), 1);
+    refreshChips();
+  });
+}
+
+function wireNotesComposer() {
+  const composeContent = initRichEditor('notes-compose-wrap', {
+    placeholder: 'Capture an idea…',
+    initialHtml: notesDraftContent,
+    onChange: html => { notesDraftContent = html; saveNotesDraft(); }
+  });
+  document.getElementById('notes-compose-tags').innerHTML = renderTagChips(notesDraftTags);
+  const composeTagInput = document.getElementById('notes-compose-tag-input');
+  setupTagField(composeTagInput, document.getElementById('notes-compose-tags'), document.getElementById('notes-compose-suggest'), notesDraftTags, saveNotesDraft);
+
+  const submitOnCmdEnter = e => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); postNote(); } };
+  composeContent && composeContent.addEventListener('keydown', submitOnCmdEnter);
+  composeTagInput && composeTagInput.addEventListener('keydown', submitOnCmdEnter);
+
+  if (editingNoteId != null) {
+    const editChips = document.getElementById(`note-edit-tags-${editingNoteId}`);
+    if (editChips) editChips.innerHTML = renderTagChips(editingNoteTags);
+    const editTagInput = document.getElementById(`note-edit-tag-input-${editingNoteId}`);
+    setupTagField(editTagInput, editChips, document.getElementById(`note-edit-suggest-${editingNoteId}`), editingNoteTags);
+  }
+
+  if (editingEntry) {
+    const { noteId, entryId } = editingEntry;
+    const note = notes.find(x => x.id === noteId);
+    const entry = note && note.entries.find(e => e.id === entryId);
+    const editEntryContent = initRichEditor(`entry-edit-wrap-${noteId}-${entryId}`, { initialHtml: entry ? entry.html : '' });
+    const saveEntryOnCmdEnter = e => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); saveEditEntry(noteId, entryId); } };
+    editEntryContent && editEntryContent.addEventListener('keydown', saveEntryOnCmdEnter);
+  }
+
+  if (addingEntryToNoteId != null) {
+    const nid = addingEntryToNoteId;
+    const addEntryContent = initRichEditor(`note-add-entry-wrap-${nid}`, { placeholder: 'Continue this idea…' });
+    const addEntryOnCmdEnter = e => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); submitNoteEntry(nid); } };
+    addEntryContent && addEntryContent.addEventListener('keydown', addEntryOnCmdEnter);
+  }
+}
+
+async function postNote() {
+  const el = document.getElementById('notes-compose-content');
+  const html = el ? el.innerHTML : notesDraftContent;
+  const text = el ? el.textContent.trim() : '';
+  if (!text && !(el && el.querySelector('img'))) { el && el.focus(); return; }
+  const author = profile ? profile.name : 'You', authorId = profile ? profile.id : null, authorHsl = profile ? profile.hsl : DEFAULT_PROFILE_HSL;
+  const now = new Date().toISOString();
+  const note = {
+    id: nextNoteId++, entries: [{ id: 1, html, author, authorId, authorHsl, createdAt: now }],
+    tags: [...notesDraftTags], author, authorId, authorHsl, createdAt: now,
+    replyToId: composerReplyTo ? composerReplyTo.noteId : null,
+  };
+  notes.unshift(note);
+  notesDraftTags = []; notesDraftContent = ''; composerReplyTo = null;
+  saveNotesDraft();
+  renderNotes();
+  await sbCreateNote(note);
+}
+
+/* tag editing is note-level (applies to the whole chain) and separate from editing any one entry's text */
+function startEditNote(id) {
+  const n = notes.find(x => x.id === id); if (!n) return;
+  editingNoteId = id;
+  editingNoteTags = [...(n.tags || [])];
+  renderNotes();
+}
+function cancelEditNote() {
+  editingNoteId = null; editingNoteTags = [];
+  renderNotes();
+}
+function saveEditNote(id) {
+  const n = notes.find(x => x.id === id); if (!n) return;
+  n.tags = [...editingNoteTags];
+  editingNoteId = null; editingNoteTags = [];
+  sbUpdateNote(n);
+  renderNotes();
+}
+function deleteNote(id) {
+  if (!confirm("Delete this note? This can't be undone.")) return;
+  notes = notes.filter(n => n.id !== id);
+  if (editingNoteId === id) editingNoteId = null;
+  if (editingEntry && editingEntry.noteId === id) editingEntry = null;
+  if (addingEntryToNoteId === id) addingEntryToNoteId = null;
+  renderNotes();
+  sbDeleteNote(id);
+}
+
+/* ── chain entries: follow-up ideas appended to an existing note ── */
+function startEditEntry(noteId, entryId) {
+  editingEntry = { noteId, entryId };
+  renderNotes();
+}
+function cancelEditEntry() {
+  editingEntry = null;
+  renderNotes();
+}
+function saveEditEntry(noteId, entryId) {
+  const el = document.getElementById(`entry-edit-content-${noteId}-${entryId}`); if (!el) return;
+  const html = el.innerHTML, text = el.textContent.trim();
+  if (!text && !el.querySelector('img')) return;
+  const n = notes.find(x => x.id === noteId); if (!n) return;
+  const entry = n.entries.find(e => e.id === entryId); if (!entry) return;
+  entry.html = html;
+  editingEntry = null;
+  sbUpdateNote(n);
+  renderNotes();
+}
+/* deleting a chain's only remaining entry deletes the note itself */
+function deleteEntry(noteId, entryId) {
+  const n = notes.find(x => x.id === noteId); if (!n) return;
+  if (n.entries.length <= 1) { deleteNote(noteId); return; }
+  if (!confirm("Delete this entry? This can't be undone.")) return;
+  n.entries = n.entries.filter(e => e.id !== entryId);
+  if (editingEntry && editingEntry.noteId === noteId && editingEntry.entryId === entryId) editingEntry = null;
+  renderNotes();
+  sbUpdateNote(n);
+}
+function startAddEntry(id) {
+  addingEntryToNoteId = id;
+  renderNotes();
+}
+function cancelAddEntry() {
+  addingEntryToNoteId = null;
+  renderNotes();
+}
+async function submitNoteEntry(id) {
+  const el = document.getElementById(`note-add-entry-content-${id}`); if (!el) return;
+  const html = el.innerHTML, text = el.textContent.trim();
+  if (!text && !el.querySelector('img')) { el.focus(); return; }
+  const n = notes.find(x => x.id === id); if (!n) return;
+  const entry = {
+    id: nextEntryId(n), html,
+    author: profile ? profile.name : 'You', authorId: profile ? profile.id : null,
+    authorHsl: profile ? profile.hsl : DEFAULT_PROFILE_HSL,
+    createdAt: new Date().toISOString(),
+  };
+  n.entries.push(entry);
+  addingEntryToNoteId = null;
+  renderNotes();
+  await sbUpdateNote(n);
+}
+/* single-tag jump (used by a note card's tag chips — replaces the active tag filter set) */
+function filterByTag(tag) {
+  notesTagFilters = [tag];
+  renderNotes();
+}
+/* sidebar checkbox-style toggle — AND-combines with any other active tag filters */
+function toggleTagFilter(tag) {
+  const i = notesTagFilters.indexOf(tag);
+  if (i === -1) notesTagFilters.push(tag); else notesTagFilters.splice(i, 1);
+  renderNotes();
+}
+/* a note has exactly one author, so author filters OR-combine rather than AND */
+function toggleAuthorFilter(key) {
+  const i = notesAuthorFilters.indexOf(key);
+  if (i === -1) notesAuthorFilters.push(key); else notesAuthorFilters.splice(i, 1);
+  renderNotes();
+}
+function clearAllFilters() {
+  notesTagFilters = [];
+  notesAuthorFilters = [];
+  renderNotes();
+}
+
+/* stable identity for grouping/filtering by author — falls back to name for legacy notes without a profile id */
+function authorKey(n) { return n.authorId || `name:${n.author || 'Unknown'}`; }
+function authorNameForKey(key) {
+  const n = notes.find(x => authorKey(x) === key);
+  return n ? (n.author || 'Unknown') : key.replace(/^name:/, '');
+}
+
+function renderNotesSidebar() {
+  const counts = {};
+  notes.forEach(n => (n.tags || []).forEach(t => counts[t] = (counts[t] || 0) + 1));
+  const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+  return `
+    <button class="notes-tag-item ${!notesTagFilters.length && !notesAuthorFilters.length ? 'active' : ''}" onclick="clearAllFilters()">
+      <span class="notes-tag-name">All notes</span><span class="notes-tag-count">${notes.length}</span>
+    </button>
+    ${sorted.map(([t, c]) => `
+      <button class="notes-tag-item ${notesTagFilters.includes(t) ? 'active' : ''}" onclick="toggleTagFilter('${t.replace(/'/g,"\\'")}')">
+        <span class="notes-tag-name">#${escapeHtml(t)}</span><span class="notes-tag-count">${c}</span>
+      </button>`).join('')}
+    ${!sorted.length ? '<div class="notes-tag-empty">Tag a note to organize it here.</div>' : ''}
+  `;
+}
+
+function renderNotesAuthorSidebar() {
+  const map = new Map();
+  notes.forEach(n => {
+    const key = authorKey(n);
+    if (!map.has(key)) map.set(key, { name: n.author || 'Unknown', hsl: n.authorHsl || DEFAULT_PROFILE_HSL, count: 0 });
+    map.get(key).count++;
+  });
+  const sorted = [...map.entries()].sort((a, b) => b[1].count - a[1].count || a[1].name.localeCompare(b[1].name));
+  return sorted.length ? sorted.map(([key, info]) => `
+    <button class="notes-tag-item ${notesAuthorFilters.includes(key) ? 'active' : ''}" onclick="toggleAuthorFilter('${key.replace(/'/g,"\\'")}')">
+      <span class="notes-tag-name"><span class="notes-author-dot" style="background:hsl(${info.hsl})"></span>${escapeHtml(info.name)}</span>
+      <span class="notes-tag-count">${info.count}</span>
+    </button>`).join('') : '<div class="notes-tag-empty">No notes yet.</div>';
+}
+
+/* ── tag management: rename / delete a tag across every note ── */
+function openTagManageDialog() {
+  document.getElementById('tag-manage-dialog').classList.remove('hidden');
+  renderTagManageList();
+}
+function closeTagManageDialog() { document.getElementById('tag-manage-dialog').classList.add('hidden'); }
+function renderTagManageList() {
+  const el = document.getElementById('tag-manage-list'); if (!el) return;
+  const tags = getAllTagNames();
+  el.innerHTML = tags.length ? tags.map(t => `
+    <div class="tag-manage-row">
+      <input type="text" class="input" value="${escapeHtml(t)}" id="tag-manage-input-${cssEscapeId(t)}"
+             onkeydown="if(event.key==='Enter'){event.preventDefault(); renameTagManage('${t.replace(/'/g,"\\'")}', this.value);}">
+      <button class="btn btn-outline btn-sm" onclick="renameTagManage('${t.replace(/'/g,"\\'")}', document.getElementById('tag-manage-input-${cssEscapeId(t)}').value)">Rename</button>
+      <button class="btn btn-outline btn-sm tag-manage-del" title="Delete tag" onclick="deleteTagManage('${t.replace(/'/g,"\\'")}')">Delete</button>
+    </div>`).join('') : '<div class="notes-tag-empty">No tags yet.</div>';
+}
+function cssEscapeId(s) { return s.replace(/[^a-z0-9]/gi, '_'); }
+async function renameTagManage(oldTag, rawNew) {
+  const newTag = normalizeTag(rawNew);
+  if (!newTag || newTag === oldTag) return;
+  const affected = [];
+  notes.forEach(n => {
+    if ((n.tags || []).includes(oldTag)) {
+      n.tags = [...new Set(n.tags.map(t => t === oldTag ? newTag : t))];
+      affected.push(n);
+    }
+  });
+  notesTagFilters = [...new Set(notesTagFilters.map(t => t === oldTag ? newTag : t))];
+  renderTagManageList();
+  renderNotes();
+  for (const n of affected) await sbUpdateNote(n);
+}
+async function deleteTagManage(tag) {
+  const affected = [];
+  notes.forEach(n => {
+    if ((n.tags || []).includes(tag)) { n.tags = n.tags.filter(t => t !== tag); affected.push(n); }
+  });
+  notesTagFilters = notesTagFilters.filter(t => t !== tag);
+  renderTagManageList();
+  renderNotes();
+  for (const n of affected) await sbUpdateNote(n);
+}
+
+function renderChainEntry(n, entry) {
+  const canEditEntry = !!(entry.authorId && profile && entry.authorId === profile.id);
+  const time = fmtNoteTime(entry.createdAt);
+  if (editingEntry && editingEntry.noteId === n.id && editingEntry.entryId === entry.id) {
+    return `
+      <div class="note-chain-entry" data-eid="${entry.id}">
+        <div class="rte-wrap boxed" id="entry-edit-wrap-${n.id}-${entry.id}">
+          ${RTE_TOOLBAR_HTML_IMG}
+          <div class="rte-content" id="entry-edit-content-${n.id}-${entry.id}" contenteditable="true" data-rte-content></div>
+        </div>
+        <div class="comment-edit-actions">
+          <button class="btn btn-outline btn-sm" onclick="cancelEditEntry()">Cancel</button>
+          <button class="btn btn-default btn-sm" onclick="saveEditEntry(${n.id}, ${entry.id})">Save</button>
+        </div>
+      </div>`;
+  }
+  return `
+      <div class="note-chain-entry" data-eid="${entry.id}">
+        <div class="note-chain-entry-hdr">
+          <div class="comment-avatar" style="background:hsl(${entry.authorHsl || DEFAULT_PROFILE_HSL})" title="${escapeHtml(entry.author || 'You')}">${initials(entry.author)}</div>
+          <span class="comment-time">${time}</span>
+          <div class="comment-header-actions">
+            ${canEditEntry ? `<button class="comment-edit-btn" title="Edit" onclick="startEditEntry(${n.id}, ${entry.id})">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            </button>` : ''}
+            ${canEditEntry ? `<button class="comment-del" title="Delete" onclick="deleteEntry(${n.id}, ${entry.id})">×</button>` : ''}
+          </div>
+        </div>
+        <div class="note-content rte-content">${entry.html}</div>
+      </div>`;
+}
+
+function renderNoteCard(n) {
+  const canEdit = !!(n.authorId && profile && n.authorId === profile.id);
+  const pinned = isPinned(n.id);
+  const editingTags = n.id === editingNoteId;
+  const suppressAdd = editingTags || (editingEntry && editingEntry.noteId === n.id);
+  const addingHere = addingEntryToNoteId === n.id;
+
+  return `
+    <div class="note-card${pinned ? ' pinned' : ''}" data-nid="${n.id}">
+      <div class="note-chain">${n.entries.map(entry => renderChainEntry(n, entry)).join('')}</div>
+      ${!suppressAdd ? (addingHere ? `
+      <div class="note-chain-add-composer">
+        <div class="rte-wrap boxed" id="note-add-entry-wrap-${n.id}">
+          ${RTE_TOOLBAR_HTML_IMG}
+          <div class="rte-content" id="note-add-entry-content-${n.id}" contenteditable="true" data-rte-content data-placeholder="Continue this idea…"></div>
+        </div>
+        <div class="notes-composer-actions">
+          <span class="notes-composer-hint">⌘/Ctrl + Enter to add</span>
+          <button class="btn btn-outline btn-sm" onclick="cancelAddEntry()">Cancel</button>
+          <button class="btn btn-default btn-sm" onclick="submitNoteEntry(${n.id})">Add</button>
+        </div>
+      </div>` : `
+      <div class="note-chain-actions">
+        <button type="button" class="note-chain-add-trigger" onclick="startAddEntry(${n.id})">+ Add to this idea</button>
+        <button type="button" class="note-chain-add-trigger" onclick="startLinkedNote(${n.id})">Continue as new note →</button>
+      </div>`) : ''}
+      ${editingTags ? `
+      <div class="notes-tag-row">
+        <div class="notes-tag-chips" id="note-edit-tags-${n.id}"></div>
+        <div class="notes-tag-input-wrap">
+          <input type="text" class="notes-tag-input" id="note-edit-tag-input-${n.id}" placeholder="Add tag + Enter">
+          <div class="notes-tag-suggest" id="note-edit-suggest-${n.id}" hidden></div>
+        </div>
+      </div>
+      <div class="comment-edit-actions">
+        <button class="btn btn-outline btn-sm" onclick="cancelEditNote()">Cancel</button>
+        <button class="btn btn-default btn-sm" onclick="saveEditNote(${n.id})">Save</button>
+      </div>` : `
+      <div class="note-card-footer">
+        <div class="note-tags">${n.tags && n.tags.length ? n.tags.map(t => `<button class="note-tag-chip" onclick="filterByTag('${t.replace(/'/g,"\\'")}')">#${escapeHtml(t)}</button>`).join('') : ''}</div>
+        <div class="note-card-footer-actions">
+          <button class="note-pin-btn${pinned ? ' pinned' : ''}" title="${pinned ? 'Unpin' : 'Pin to top'}" onclick="togglePinNote(${n.id})">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="${pinned ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M12 17v5M8 3h8l-1 6 2.5 2.5a1 1 0 0 1-.7 1.7H7.2a1 1 0 0 1-.7-1.7L9 9 8 3z"/></svg>
+          </button>
+          <div class="note-card-actions">
+            ${canEdit ? `<button class="comment-edit-btn" title="Edit tags" onclick="startEditNote(${n.id})">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            </button>` : ''}
+            ${canEdit ? `<button class="comment-del" title="Delete note" onclick="deleteNote(${n.id})">×</button>` : ''}
+          </div>
+        </div>
+      </div>`}
+    </div>`;
+}
+
+function renderNotes() {
+  const root = document.getElementById('notes-root'); if (!root) return;
+  const filtered = notes.filter(n => {
+    const tagOk = !notesTagFilters.length || notesTagFilters.every(t => (n.tags || []).includes(t));
+    const authorOk = !notesAuthorFilters.length || notesAuthorFilters.includes(authorKey(n));
+    return tagOk && authorOk;
+  });
+  const displayList = sortNotesForDisplay(filtered);
+  const groups = groupNotesByThread(displayList);
+  const emptyParts = [];
+  if (notesTagFilters.length) emptyParts.push(notesTagFilters.map(t => '#' + escapeHtml(t)).join(' + '));
+  if (notesAuthorFilters.length) emptyParts.push(notesAuthorFilters.map(k => escapeHtml(authorNameForKey(k))).join(' or '));
+  const emptyMsg = emptyParts.length ? `No notes matching ${emptyParts.join(' · ')}` : 'No notes yet — jot down your first idea above.';
+
+  root.innerHTML = `
+    <aside class="notes-sidebar">
+      <div class="notes-sidebar-hdr-row">
+        <span class="notes-sidebar-hdr">Tags</span>
+        <button type="button" class="notes-manage-tags-btn" onclick="openTagManageDialog()">Manage</button>
+      </div>
+      <div class="notes-tag-list">${renderNotesSidebar()}</div>
+      <div class="notes-sidebar-hdr-row notes-sidebar-section">
+        <span class="notes-sidebar-hdr">People</span>
+      </div>
+      <div class="notes-tag-list">${renderNotesAuthorSidebar()}</div>
+    </aside>
+    <div class="notes-main">
+      <div class="notes-composer">
+        <div class="comment-input-avatar" style="background:hsl(${profile ? profile.hsl : DEFAULT_PROFILE_HSL})">${profile ? initials(profile.name) : '?'}</div>
+        <div class="notes-composer-inner">
+          ${composerReplyTo ? `
+          <div class="notes-reply-banner">
+            <span>↳ Continuing: "${escapeHtml(composerReplyTo.snippet)}"</span>
+            <button type="button" onclick="clearComposerReplyTo()" title="Cancel — post as a new unlinked note">×</button>
+          </div>` : ''}
+          <div class="rte-wrap boxed" id="notes-compose-wrap">
+            ${RTE_TOOLBAR_HTML_IMG}
+            <div class="rte-content" id="notes-compose-content" contenteditable="true" data-rte-content></div>
+          </div>
+          <div class="notes-tag-row">
+            <div class="notes-tag-chips" id="notes-compose-tags"></div>
+            <div class="notes-tag-input-wrap">
+              <input type="text" class="notes-tag-input" id="notes-compose-tag-input" placeholder="Add tag + Enter">
+              <div class="notes-tag-suggest" id="notes-compose-suggest" hidden></div>
+            </div>
+          </div>
+          <div class="notes-composer-actions">
+            <span class="notes-composer-hint">⌘/Ctrl + Enter to post</span>
+            <button class="btn btn-default btn-sm" onclick="postNote()">Post</button>
+          </div>
+        </div>
+      </div>
+      <div class="notes-feed">
+        ${groups.length ? groups.map(g => renderNoteGroup(g)).join('') : `<div class="notes-empty">${emptyMsg}</div>`}
+      </div>
+    </div>
+  `;
+  wireNotesComposer();
 }
 
 function renderExpenses() {
@@ -2796,14 +3641,15 @@ function deleteSubtaskComment(subtaskId, commentId) {
 function switchTab(t) {
   currentTab = t;
   const isMobile = window.innerWidth <= 768;
-  const activeId = t === 'board' ? 'board' : t === 'timeline' ? 'tl' : 'exp';
-  ['board','tl','exp'].forEach(id => {
+  const activeId = t === 'board' ? 'board' : t === 'timeline' ? 'tl' : t === 'notes' ? 'notes' : 'exp';
+  ['board','tl','exp','notes'].forEach(id => {
     document.getElementById('v-'+id).classList.toggle('active', id === activeId);
   });
   document.getElementById('tb-board').classList.toggle('active', t === 'board');
   document.getElementById('tb-tl').classList.toggle('active', t === 'timeline');
+  document.getElementById('tb-notes').classList.toggle('active', t === 'notes');
   document.getElementById('tb-exp').classList.toggle('active', t === 'expenses');
-  document.querySelector('.filterbar').classList.toggle('hidden', t === 'expenses');
+  document.querySelector('.filterbar').classList.toggle('hidden', t === 'expenses' || t === 'notes');
   if (isMobile) window.scrollTo({ top: 0, behavior: 'smooth' });
   render();
 }
@@ -2825,7 +3671,7 @@ function setStatusFilter(s, btn) {
   });
   btn.classList.add('active'); render();
 }
-function render() { currentTab==='board' ? renderBoard() : currentTab==='timeline' ? renderTimeline() : renderExpenses(); }
+function render() { currentTab==='board' ? renderBoard() : currentTab==='timeline' ? renderTimeline() : currentTab==='notes' ? renderNotes() : renderExpenses(); }
 
 /* ─── Add modal ─── */
 function openAddModal() {
@@ -2847,8 +3693,10 @@ async function saveNewTask() {
 
 document.getElementById('add-dialog').addEventListener('click', e => { if(e.target===document.getElementById('add-dialog')) closeAddModal(); });
 document.getElementById('new-cat-dialog').addEventListener('click', e => { if(e.target===document.getElementById('new-cat-dialog')) closeNewCatDialog(); });
+document.getElementById('tag-manage-dialog').addEventListener('click', e => { if(e.target===document.getElementById('tag-manage-dialog')) closeTagManageDialog(); });
 document.addEventListener('keydown', e => {
   if (e.key==='Escape') {
+    if (!document.getElementById('tag-manage-dialog').classList.contains('hidden')) { closeTagManageDialog(); return; }
     if (!document.getElementById('new-cat-dialog').classList.contains('hidden')) { closeNewCatDialog(); return; }
     if (drawerSubtaskId) { closeSubDrawer(); }
     else { closeAddModal(); if(drawerTaskId) closeDrawer(); }
@@ -2859,10 +3707,13 @@ document.addEventListener('keydown', e => {
 
 loadCustomCats();
 loadProfiles();
+loadNotesDraft();
+loadPinnedNotes();
 renderProfileBadge();
 showStartupScreen();
 sbInit();
 sbInitExpenses();
+sbInitNotes();
 </script>
 </body>
 </html>
